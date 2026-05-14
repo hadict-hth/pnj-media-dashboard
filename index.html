@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PNJ · Weekly Media Intelligence Hub</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+:root {
+  --navy:  #1A2E4A;
+  --gold:  #C8973A;
+  --blue:  #3B6A9C;
+  --green: #10B981;
+  --red:   #DC2626;
+  --amber: #F59E0B;
+  --bg:    #F0F2F5;
+  --card:  #ffffff;
+  --border:#E4E8EE;
+  --muted: #6B7280;
+  --text:  #111827;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:12px;font-size:13px;line-height:1.5;}
+@media(min-width:768px){body{padding:20px;}}
+.wrap{max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
+
+/* ── Settings ── */
+.gs-panel{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 16px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+.gs-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;color:#4B5563;font-weight:600;user-select:none;flex-wrap:wrap;}
+.gs-toggle .chevron{margin-left:auto;transition:transform .2s;color:#9CA3AF;}
+.gs-toggle.open .chevron{transform:rotate(180deg);}
+.gs-body{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+.gs-body.open{display:block;}
+
+.mode-tabs{display:flex;gap:0;margin-bottom:10px;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.mode-tab{flex:1;padding:6px 10px;font-size:11px;font-weight:600;border:none;background:#F9FAFB;color:#6B7280;cursor:pointer;transition:all .15s;text-align:center;}
+.mode-tab.active{background:var(--navy);color:#fff;}
+
+.mode-pane{display:none;} .mode-pane.active{display:block;}
+.gs-section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#9CA3AF;margin:10px 0 6px;}
+.gs-row{display:flex;flex-direction:column;gap:8px;}
+@media(min-width:600px){.gs-row{flex-direction:row;align-items:center;}}
+.gs-input{flex:1;padding:7px 11px;border:1px solid #D1D5DB;border-radius:6px;font-size:12px;font-family:'DM Sans',sans-serif;outline:none;width:100%;color:var(--text);}
+.gs-input:focus{border-color:var(--navy);box-shadow:0 0 0 2px rgba(26,46,74,.1);}
+.btn{padding:7px 16px;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .2s;text-align:center;white-space:nowrap;}
+.btn:hover{opacity:.88;}
+.btn-navy{background:var(--navy);color:#fff;}
+.btn-green{background:#10B981;color:#fff;}
+.btn-ghost{background:#F3F4F6;color:#374151;border:1px solid var(--border);}
+.btn-amber{background:var(--amber);color:#fff;}
+.gs-hint{margin-top:8px;font-size:11px;color:#6B7280;line-height:1.65;background:#F9FAFB;border-radius:6px;padding:8px 12px;}
+.gs-hint code{background:#E5E7EB;padding:1px 5px;border-radius:4px;font-family:'DM Mono',monospace;font-size:10px;}
+.gs-status{font-size:11px;margin-top:8px;min-height:16px;font-family:'DM Mono',monospace;}
+.csv-hint{font-size:10.5px;color:#6B7280;margin-bottom:8px;line-height:1.7;}
+.csv-hint strong{color:#374151;}
+.csv-hint em{background:#EEF2FF;color:#3730A3;padding:1px 5px;border-radius:4px;font-style:normal;font-size:10px;}
+.csv-textarea{width:100%;padding:8px 10px;border:1px solid #D1D5DB;border-radius:6px;font-size:10.5px;font-family:'DM Mono',monospace;resize:vertical;min-height:80px;outline:none;color:#374151;}
+.csv-textarea:focus{border-color:var(--navy);}
+
+/* ── Header ── */
+.header{background:linear-gradient(135deg,#0D1B2E 0%,#1A2E4A 55%,#1e3654 100%);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 4px 16px -4px rgba(26,46,74,.35);position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(200,151,58,.12) 0%,transparent 70%);}
+@media(min-width:768px){.header{padding:20px 28px;flex-direction:row;justify-content:space-between;align-items:center;}}
+.h-sup{color:var(--gold);font-size:9.5px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:4px;opacity:.9;}
+.h-title{color:#fff;font-size:18px;font-weight:700;letter-spacing:-.4px;}
+@media(min-width:768px){.h-title{font-size:21px;}}
+.h-right{text-align:left;display:flex;flex-direction:column;gap:6px;}
+@media(min-width:768px){.h-right{text-align:right;align-items:flex-end;}}
+.h-badge{background:rgba(200,151,58,.2);color:var(--gold);border:1px solid rgba(200,151,58,.5);font-size:9px;font-weight:700;padding:3px 11px;border-radius:20px;display:inline-block;letter-spacing:1.5px;}
+.h-sub{color:rgba(255,255,255,.5);font-size:11px;font-weight:400;}
+.h-daterange{color:rgba(255,255,255,.75);font-size:11px;font-weight:500;font-family:'DM Mono',monospace;display:flex;align-items:center;gap:6px;}
+.h-daterange svg{opacity:.6;}
+
+/* ── KPI cards ── */
+.kpi-row{display:grid;grid-template-columns:1fr;gap:12px;}
+@media(min-width:600px){.kpi-row{grid-template-columns:repeat(3,1fr);}}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.03);position:relative;overflow:hidden;}
+.kpi-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
+.kpi-card.navy::after{background:var(--navy);}
+.kpi-card.green::after{background:var(--green);}
+.kpi-card.gold::after{background:var(--gold);}
+.kpi-lbl{font-size:9.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.kpi-val{font-size:26px;font-weight:700;line-height:1;color:#111827;letter-spacing:-.5px;font-family:'DM Sans',sans-serif;}
+.kpi-sub{font-size:10.5px;color:#9CA3AF;margin-top:6px;font-weight:400;font-family:'DM Mono',monospace;}
+
+/* ── View Tabs ── */
+.view-tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+.view-tabs::-webkit-scrollbar{display:none;}
+.view-btn{padding:7px 18px;border:1px solid var(--border);background:var(--card);border-radius:8px;font-size:12px;font-weight:600;color:#4B5563;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
+.view-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.view-btn:hover:not(.active){background:#F3F4F6;}
+
+/* ── Charts Row ── */
+.charts-row{display:grid;grid-template-columns:1fr;gap:14px;}
+@media(min-width:768px){.charts-row{grid-template-columns:1fr 1.6fr;}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.03);}
+@media(min-width:768px){.card{padding:18px;}}
+.card-title{font-size:10.5px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.card-title-badge{background:#EEF2FF;color:#3730A3;font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700;letter-spacing:.5px;}
+
+/* Donut Chart */
+.chart-content{display:flex;flex-direction:column;align-items:center;gap:16px;}
+@media(min-width:480px){.chart-content{flex-direction:row;align-items:flex-start;gap:20px;}}
+.donut-wrap{width:130px;height:130px;position:relative;flex-shrink:0;margin:0 auto;}
+@media(min-width:480px){.donut-wrap{margin:0;}}
+.legend{display:flex;flex-direction:column;gap:7px;flex:1;width:100%;}
+.leg-item{display:flex;align-items:center;font-size:11px;color:#4B5563;}
+.leg-dot{width:9px;height:9px;border-radius:3px;flex-shrink:0;margin-right:8px;}
+.leg-label{flex:1;font-weight:500;}
+.leg-val{font-weight:700;color:#111827;font-family:'DM Mono',monospace;font-size:11px;}
+.leg-sub{font-size:9.5px;color:#9CA3AF;margin-left:8px;width:42px;text-align:right;}
+
+/* ══════════════════════════════════════════════
+   AD PREVIEW GALLERY
+══════════════════════════════════════════════ */
+.gallery-card{display:flex;flex-direction:column;}
+.gallery-filters{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
+.g-btn{padding:4px 11px;border:1px solid var(--border);border-radius:20px;font-size:10px;font-weight:600;cursor:pointer;background:#F9FAFB;color:#4B5563;transition:all .15s;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+.g-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.g-btn:hover:not(.active){background:#F3F4F6;}
+.gallery-sub{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;min-height:22px;}
+.g-chip{padding:2px 9px;border-radius:12px;font-size:9.5px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:#fff;color:#6B7280;transition:all .15s;white-space:nowrap;}
+.g-chip.active{background:var(--gold);color:#fff;border-color:var(--gold);}
+.gallery-scroll{overflow-y:auto;max-height:320px;padding-right:2px;}
+.gallery-scroll::-webkit-scrollbar{width:4px;}
+.gallery-scroll::-webkit-scrollbar-track{background:transparent;}
+.gallery-scroll::-webkit-scrollbar-thumb{background:#D1D5DB;border-radius:4px;}
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+@media(max-width:480px){.gallery-grid{grid-template-columns:repeat(2,1fr);}}
+.ad-card{border-radius:10px;overflow:hidden;border:1px solid var(--border);position:relative;background:#F3F4F6;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s;}
+.ad-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.12);border-color:#C4C8D0;}
+.ad-thumb-wrap{width:100%;aspect-ratio:9/16;position:relative;overflow:hidden;background:#E9EAEC;}
+.ad-thumb{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s;}
+.ad-card:hover .ad-thumb{transform:scale(1.04);}
+.ad-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px;}
+.ad-placeholder-icon{font-size:22px;opacity:.4;}
+.ad-placeholder-text{font-size:9px;color:#9CA3AF;text-align:center;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.ad-overlay{position:absolute;bottom:0;left:0;right:0;padding:8px 7px 7px;background:linear-gradient(0deg,rgba(0,0,0,.78) 0%,rgba(0,0,0,.2) 60%,transparent 100%);color:#fff;}
+.ad-brand{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ad-meta{font-size:8.5px;color:rgba(255,255,255,.7);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ad-status-badge{position:absolute;top:6px;right:6px;padding:2px 6px;border-radius:10px;font-size:8px;font-weight:700;letter-spacing:.5px;backdrop-filter:blur(4px);}
+.ad-status-badge.aired{background:rgba(16,185,129,.85);color:#fff;}
+.ad-status-badge.planned{background:rgba(245,158,11,.85);color:#fff;}
+.ad-ch-badge{position:absolute;top:6px;left:6px;padding:2px 6px;border-radius:10px;font-size:7.5px;font-weight:700;backdrop-filter:blur(4px);}
+.ad-ch-badge.social{background:rgba(24,119,242,.8);color:#fff;}
+.ad-ch-badge.google{background:rgba(234,67,53,.8);color:#fff;}
+.ad-ch-badge.tiktok{background:rgba(0,0,0,.7);color:#fff;}
+.gallery-empty{text-align:center;padding:32px 8px;color:#9CA3AF;font-size:12px;grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.gallery-empty-icon{font-size:28px;opacity:.4;}
+.g-count{font-size:9px;background:#F3F4F6;color:#6B7280;padding:2px 7px;border-radius:10px;font-weight:600;font-family:'DM Mono',monospace;}
+
+/* ── Table ── */
+.table-card{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:0 2px 6px rgba(0,0,0,.04);overflow:hidden;}
+.table-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:4px;background:#FAFAFA;}
+@media(min-width:768px){.table-header{padding:14px 20px;flex-direction:row;justify-content:space-between;align-items:center;}}
+.table-title{font-size:11px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:1px;}
+.table-subtitle{font-size:10.5px;color:#6B7280;}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;min-width:720px;border-collapse:collapse;font-size:11px;}
+thead th{padding:9px 12px;background:#F3F4F6;color:#4B5563;font-weight:700;font-size:9.5px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #E5E7EB;white-space:nowrap;}
+thead th.l{text-align:left;}
+thead th.r{text-align:right;}
+.th-budget{background:#EEF2FF;color:#3730A3;}
+.th-reach{background:#F0FDF4;color:#166534;}
+.th-click{background:#FFFBEB;color:#92400E;}
+.th-eff{background:#F9FAFB;color:#374151;border-left:1px dashed #D1D5DB;}
+tr.p-row td{padding:9px 12px;border-bottom:1px solid #E5E7EB;vertical-align:middle;}
+tr.p-row.exp{cursor:pointer;}
+tr.p-row.exp:hover td{background:#FAFAFA;}
+.row-label{display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.badge-sm{display:inline-block;padding:2px 6px;border-radius:12px;font-size:8.5px;font-weight:600;background:#E5E7EB;color:#4B5563;margin-left:6px;}
+.arr-icon{font-size:9px;color:#9CA3AF;margin-left:4px;transition:transform .2s;display:inline-block;}
+tr.p-row.open .arr-icon{transform:rotate(90deg);color:#111827;}
+td.p-name{font-weight:700;color:#111827;font-size:12px;}
+.data-cell{position:relative;text-align:right;padding:9px 12px !important;overflow:hidden;}
+.data-bar{position:absolute;left:0;top:4px;bottom:4px;border-radius:0 4px 4px 0;opacity:.13;z-index:0;transition:width .4s ease;}
+.data-val{font-weight:600;color:#111827;display:block;position:relative;z-index:1;font-family:'DM Mono',monospace;font-size:11px;}
+.data-pct{font-size:9px;color:#6B7280;margin-top:1px;display:block;position:relative;z-index:1;}
+.eff-cell{text-align:right;font-weight:600;color:#4B5563;border-left:1px dashed #E5E7EB;background:#FAFAFA;padding:9px 12px;vertical-align:middle;font-family:'DM Mono',monospace;font-size:11px;}
+.eff-good{color:#059669;}
+.eff-warn{color:#D97706;}
+tr.c-row{display:none;}
+tr.c-row.open{display:table-row;}
+tr.c-row td{padding:7px 12px;border-bottom:1px solid #F3F4F6;background:#FDFAF6;vertical-align:middle;}
+tr.cc-row{display:none;}
+tr.cc-row.open{display:table-row;}
+tr.cc-row td{padding:5px 12px;border-bottom:1px dotted #E5E7EB;background:#fff;font-size:10px;vertical-align:middle;}
+tr.total-row td{padding:12px;background:#F3F4F6;font-weight:700;font-size:12px;color:#111827;border-top:2px solid #D1D5DB;font-family:'DM Mono',monospace;}
+
+/* ── Modal ── */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);}
+.modal-backdrop.open{display:flex;}
+.modal-box{background:#fff;border-radius:16px;overflow:hidden;max-width:360px;width:100%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.4);animation:modalIn .2s ease;}
+@keyframes modalIn{from{opacity:0;transform:scale(.92);}to{opacity:1;transform:scale(1);}}
+.modal-close{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.5);color:#fff;border:none;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;line-height:1;}
+.modal-img-wrap{width:100%;aspect-ratio:9/16;background:#1A1A2E;position:relative;overflow:hidden;}
+.modal-img{width:100%;height:100%;object-fit:contain;}
+.modal-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:rgba(255,255,255,.4);}
+.modal-placeholder-icon{font-size:48px;}
+.modal-info{padding:14px 16px;}
+.modal-brand{font-size:16px;font-weight:700;color:#111827;margin-bottom:8px;}
+.modal-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.modal-tag{padding:3px 9px;border-radius:12px;font-size:10px;font-weight:600;}
+.modal-tag.camp{background:#EEF2FF;color:#3730A3;}
+.modal-tag.ch{background:#F0FDF4;color:#166534;}
+.modal-tag.week{background:#FFFBEB;color:#92400E;}
+.modal-tag.date{background:#F9FAFB;color:#4B5563;border:1px solid #E5E7EB;}
+.modal-status{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;}
+.modal-status.aired{color:#059669;}
+.modal-status.planned{color:#D97706;}
+
+/* ── Responsive tweaks ── */
+@media(max-width:420px){.gallery-grid{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══ DATA INTEGRATION HUB ═══ -->
+<div class="gs-panel">
+  <div class="gs-toggle" id="gsToggle" onclick="toggleGS()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+    <span style="color:var(--navy);font-weight:700;">Data Integration Hub</span>
+    <span style="color:#9CA3AF;font-weight:400;font-size:11px;"> — Weekly Actuals Sync</span>
+    <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+  </div>
+
+  <div class="gs-body" id="gsBody">
+
+    <!-- Mode Tabs -->
+    <div class="mode-tabs">
+      <button class="mode-tab active" id="tab-url"   onclick="switchTab('url')">🔗 Link CSV</button>
+      <button class="mode-tab"        id="tab-paste" onclick="switchTab('paste')">📋 Dán CSV</button>
+      <button class="mode-tab"        id="tab-gh"    onclick="switchTab('gh')">📁 GitHub Ads</button>
+    </div>
+
+    <!-- Pane 1: URL -->
+    <div class="mode-pane active" id="pane-url">
+      <div class="gs-row">
+        <input class="gs-input" id="sheetUrl" placeholder="Link CSV từ Google Sheet (Publish to web → CSV)...">
+        <button class="btn btn-navy" onclick="loadSheet()">Sync Data</button>
+        <button class="btn btn-ghost" onclick="resetData()">Reset</button>
+      </div>
+      <div class="gs-hint">
+        <strong>Lấy link:</strong> Google Sheet → <em>File</em> → <em>Share → Publish to web</em> → tab <em>MediaPlan</em> → CSV → Copy link<br>
+        <strong>Template mới:</strong> Đã có thêm cột <code>Week</code>, <code>Date_Start</code>, <code>Date_End</code>, <code>Ad_Filename</code>, <code>Ad_Status</code>
+        — <button class="btn btn-amber" style="display:inline;padding:2px 8px;font-size:10px;border-radius:4px;" onclick="downloadTemplate()">⬇ Tải Template mới</button>
+      </div>
+    </div>
+
+    <!-- Pane 2: Paste -->
+    <div class="mode-pane" id="pane-paste">
+      <div class="csv-hint">
+        <strong>Cách lấy CSV:</strong> File → Download → .csv → mở Notepad → Ctrl+A → Ctrl+C → paste vào đây
+      </div>
+      <textarea class="csv-textarea" id="csvPaste" placeholder="Dán CSV vào đây...&#10;(Header: #,Month,Week,Date_Start,Date_End,Campaign,Brand / Chi Nhánh,Channel,Budget,Reach,Click,Ad_Filename,Ad_Status)"></textarea>
+      <div class="gs-row" style="margin-top:8px;">
+        <button class="btn btn-navy" onclick="loadPasted()">Parse & Load</button>
+        <button class="btn btn-ghost" onclick="resetData()">Reset</button>
+        <button class="btn btn-amber" onclick="downloadTemplate()">⬇ Template</button>
+      </div>
+    </div>
+
+    <!-- Pane 3: GitHub Config -->
+    <div class="mode-pane" id="pane-gh">
+      <div class="csv-hint">
+        <strong>Cách upload ads lên GitHub:</strong><br>
+        1. Tạo repo public trên GitHub (VD: <code>pnj-ads-assets</code>)<br>
+        2. Upload ảnh quảng cáo, đặt tên theo quy tắc: <code>disney_social_w1.jpg</code>, <code>omni_fb_w2.png</code>...<br>
+        3. Điền base URL vào ô dưới → trong Google Sheet, cột <code>Ad_Filename</code> chỉ cần ghi tên file
+      </div>
+      <div class="gs-row">
+        <input class="gs-input" id="ghBaseInput" placeholder="https://raw.githubusercontent.com/your-org/pnj-ads-assets/main/">
+        <button class="btn btn-navy" onclick="saveGhBase()">Lưu URL</button>
+      </div>
+      <div class="gs-hint" style="margin-top:8px;">
+        <strong>Ví dụ URL base:</strong> <code>https://raw.githubusercontent.com/pnj-marketing/ads/main/t5/</code><br>
+        → Ad_Filename = <code>disney_social_w1.jpg</code> → Tự map thành full URL khi render gallery
+      </div>
+    </div>
+
+    <div class="gs-status" id="gsStatus" style="color:#6B7280;">Trạng thái: Đang hiển thị Template T5/2025</div>
+  </div>
+</div>
+
+<!-- ═══ HEADER ═══ -->
+<div class="header">
+  <div>
+    <div class="h-sup">Weekly Media Intelligence Hub</div>
+    <div class="h-title" id="hTitle">Master Media Allocation Plan — T5/2025</div>
+    <div class="h-daterange" id="hDateRange" style="margin-top:6px;display:none;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span id="hDateText">—</span>
+    </div>
+  </div>
+  <div class="h-right">
+    <div class="h-badge" id="hBadge">APPROVED TEMPLATE</div>
+    <div class="h-sub" style="margin-top:6px;">Đơn vị: VND &nbsp;|&nbsp; Nền tảng: Social & Google</div>
+    <div class="h-sub" id="hWeekInfo" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- ═══ KPI CARDS ═══ -->
+<div class="kpi-row">
+  <div class="kpi-card navy">
+    <div class="kpi-lbl">Tổng Ngân Sách Đầu Tư</div>
+    <div class="kpi-val" id="kpiBudget">2.46 tỷ</div>
+    <div class="kpi-sub" id="kpiBudgetS">2,464,563,960 VND</div>
+  </div>
+  <div class="kpi-card green">
+    <div class="kpi-lbl">Tổng Digital Coverage</div>
+    <div class="kpi-val" id="kpiReach">10.23M</div>
+    <div class="kpi-sub" id="kpiReachS">10,231,221 lượt tiếp cận</div>
+  </div>
+  <div class="kpi-card gold">
+    <div class="kpi-lbl">Traffic Thu Về (Click to Omni)</div>
+    <div class="kpi-val" id="kpiClick">1.13M</div>
+    <div class="kpi-sub" id="kpiClickS">1,129,310 clicks</div>
+  </div>
+</div>
+
+<!-- ═══ VIEW TABS ═══ -->
+<div class="view-tabs">
+  <button class="view-btn active" onclick="changeView('all',this)">Master Plan</button>
+  <button class="view-btn" onclick="changeView('brands',this)">Nhãn Hàng</button>
+  <button class="view-btn" onclick="changeView('branches',this)">Chi Nhánh</button>
+</div>
+
+<!-- ═══ CHARTS ROW ═══ -->
+<div class="charts-row">
+  <!-- Left: Campaign Donut -->
+  <div class="card">
+    <div class="card-title" id="chart1Title">Cơ cấu phân bổ Ngân sách</div>
+    <div class="chart-content">
+      <div class="donut-wrap"><canvas id="stakeChart" width="130" height="130"></canvas></div>
+      <div class="legend" id="stakeLegend"></div>
+    </div>
+  </div>
+
+  <!-- Right: Ad Preview Gallery (replaces channel donut) -->
+  <div class="card gallery-card">
+    <div class="card-title">
+      Preview Quảng Cáo
+      <span class="g-count" id="gCount">0 ads</span>
+      <span class="card-title-badge" id="gSyncBadge" style="display:none;">LIVE</span>
+    </div>
+    <!-- Filter Pills -->
+    <div class="gallery-filters" id="galleryFilters">
+      <button class="g-btn active" data-f="all"      onclick="setGFilter(this,'all')">Tất cả</button>
+      <button class="g-btn"        data-f="omni"     onclick="setGFilter(this,'omni')">Omni</button>
+      <button class="g-btn"        data-f="retail"   onclick="setGFilter(this,'retail')">Retail</button>
+      <button class="g-btn"        data-f="nhan"     onclick="setGFilter(this,'nhan')">Nhãn Hàng</button>
+      <button class="g-btn"        data-f="chinhanh" onclick="setGFilter(this,'chinhanh')">Chi Nhánh</button>
+    </div>
+    <!-- Sub-filters (brand/branch chips) -->
+    <div class="gallery-sub" id="gallerySub"></div>
+    <!-- Ad Grid -->
+    <div class="gallery-scroll">
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ BREAKDOWN TABLE ═══ -->
+<div class="table-card">
+  <div class="table-header">
+    <div class="table-title" id="tableTitle">Bảng phân bổ chi tiết & Phân tích tương quan</div>
+    <div class="table-subtitle">Nhấp [▶] để xem chi tiết cấu thành từng campaign</div>
+  </div>
+  <div class="tbl-wrap">
+    <table id="mainTable">
+      <thead>
+        <tr>
+          <th class="l" id="colCamp" style="width:22%">Campaign</th>
+          <th class="r th-budget" style="width:18%">Ngân sách (VND)</th>
+          <th class="r th-reach"  style="width:18%">Digital Coverage</th>
+          <th class="r th-click"  style="width:18%">Click to Omni</th>
+          <th class="r th-eff"    style="width:12%">CPC (đ)</th>
+          <th class="r th-eff"    style="width:12%">CPR (đ)</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- ═══ AD MODAL ═══ -->
+<div class="modal-backdrop" id="adModal" onclick="closeModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-img-wrap">
+      <img class="modal-img" id="modalImg" src="" alt="" onerror="this.style.display='none';document.getElementById('modalPh').style.display='flex'">
+      <div class="modal-placeholder" id="modalPh" style="display:none;">
+        <div class="modal-placeholder-icon">🖼️</div>
+        <div style="font-size:12px;font-weight:600;">Preview chưa có</div>
+        <div style="font-size:10px;opacity:.6;">Upload ảnh lên GitHub và cấu hình URL</div>
+      </div>
+    </div>
+    <div class="modal-info">
+      <div class="modal-brand" id="modalBrand">—</div>
+      <div class="modal-tags" id="modalTags"></div>
+      <div id="modalStatus"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+/* ═══════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════ */
+var ghBase = localStorage.getItem('pnj_gh_base') || '';
+if(ghBase) document.getElementById('ghBaseInput').value = ghBase;
+
+var galleryFilter    = 'all';
+var gallerySubFilter = '';
+var currentView      = 'all';
+var stakeInst        = null;
+
+/* ═══════════════════════════════════════════════
+   DEFAULT DATA (T5/2025 Template)
+═══════════════════════════════════════════════ */
+var DEFAULT = {
+  month: 'T5/2025',
+  dateStart: '', dateEnd: '',
+  weeks: [],
+  total: {budget:2464563960, reach:10231221, click:1129310},
+  channels:[
+    {label:'Social (Facebook & TikTok)', color:'#1877F2', budget:1960015568, reach:8128935, click:854970},
+    {label:'Google', color:'#EA4335', budget:504548392, reach:2102286, click:274340}
+  ],
+  stakes:[
+    {id:'retail',label:'Retail',badge:'20% Silver+BH',color:'#C8973A',budget:241555315,reach:1116807,click:125191,exp:false,kids:[]},
+    {id:'omni',label:'Omni',badge:'80% Silver+BH',color:'#1A2E4A',budget:966221259,reach:4467227,click:500763,exp:false,kids:[]},
+    {id:'nhan',label:'Nhãn',badge:'7 thương hiệu',color:'#3B6A9C',budget:463523163,reach:2443675,click:238935,exp:true,
+     kids:[
+       {label:'Disney',color:'#0070B9',budget:203261562,reach:846923,click:101631,
+        ch:[{l:'Social',c:'#1877F2',budget:142283093,reach:592846,click:71142},{l:'Google',c:'#EA4335',budget:60978469,reach:254077,click:30489}]},
+       {label:'MANCODE',color:'#374151',budget:69749410,reach:290623,click:34874,
+        ch:[{l:'Social',c:'#1877F2',budget:48824587,reach:203436,click:24412},{l:'Google',c:'#EA4335',budget:20924823,reach:87187,click:10462}]},
+       {label:'Sanrio',color:'#D95B9A',budget:57545194,reach:479550,click:28773,ch:[{l:'Social',c:'#1877F2',budget:57545194,reach:479550,click:28773}]},
+       {label:'Trendy',color:'#7C3AED',budget:46513979,reach:387617,click:23257,ch:[{l:'Social',c:'#1877F2',budget:46513979,reach:387617,click:23257}]},
+       {label:'Style',color:'#D97706',budget:43038294,reach:179325,click:28692,ch:[{l:'Social',c:'#1877F2',budget:43038294,reach:179325,click:28692}]},
+       {label:'Watch',color:'#059669',budget:24516919,reach:102154,click:12259,
+        ch:[{l:'Social',c:'#1877F2',budget:17161843,reach:71508,click:8581},{l:'Google',c:'#EA4335',budget:7355076,reach:30646,click:3678}]},
+       {label:'ARTA',color:'#DC2626',budget:18897805,reach:157483,click:9449,ch:[{l:'Social',c:'#1877F2',budget:18897805,reach:157483,click:9449}]}
+     ]},
+    {id:'chinhanh',label:'Chi Nhánh',badge:'6 khu vực',color:'#10B981',budget:793264223,reach:2203512,click:264421,exp:true,
+     kids:[
+       {label:'MBC',pct:'27.12%',color:'#1A2E4A',budget:215133257,reach:597592,click:71711,ch:[{l:'Social',c:'#1877F2',budget:215133257,reach:597592,click:71711}]},
+       {label:'HCM',pct:'18.47%',color:'#C8973A',budget:146515902,reach:406989,click:48839,ch:[{l:'Social',c:'#1877F2',budget:146515902,reach:406989,click:48839}]},
+       {label:'DNB',pct:'16.95%',color:'#3B6A9C',budget:134458286,reach:373495,click:44819,ch:[{l:'Social',c:'#1877F2',budget:134458286,reach:373495,click:44819}]},
+       {label:'MTG',pct:'14.58%',color:'#7C3AED',budget:115657924,reach:321272,click:38553,ch:[{l:'Social',c:'#1877F2',budget:115657924,reach:321272,click:38553}]},
+       {label:'TNN',pct:'14.41%',color:'#059669',budget:114309375,reach:317526,click:38103,ch:[{l:'Social',c:'#1877F2',budget:114309375,reach:317526,click:38103}]},
+       {label:'MTY',pct:'8.47%',color:'#D97706',budget:67189480,reach:186637,click:22396,ch:[{l:'Social',c:'#1877F2',budget:67189480,reach:186637,click:22396}]}
+     ]}
+  ],
+  // ── Ad Preview data ──
+  ads:[
+    {campaign:'Omni',brand:'-',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired'},
+    {campaign:'Omni',brand:'-',channel:'Google',week:'W2',dateStart:'08/05/2025',dateEnd:'14/05/2025',filename:'',status:'Planned'},
+    {campaign:'Retail',brand:'-',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired'},
+    {campaign:'Retail',brand:'-',channel:'Google',week:'W3',dateStart:'15/05/2025',dateEnd:'21/05/2025',filename:'',status:'Planned'},
+    {campaign:'Nhãn',brand:'Disney',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired'},
+    {campaign:'Nhãn',brand:'Disney',channel:'Google',week:'W2',dateStart:'08/05/2025',dateEnd:'14/05/2025',filename:'',status:'Planned'},
+    {campaign:'Nhãn',brand:'MANCODE',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired'},
+    {campaign:'Nhãn',brand:'Sanrio',channel:'Social (Facebook & TikTok)',week:'W2',dateStart:'08/05/2025',dateEnd:'14/05/2025',filename:'',status:'Aired'},
+    {campaign:'Nhãn',brand:'Trendy',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Planned'},
+    {campaign:'Nhãn',brand:'Style',channel:'Social (Facebook & TikTok)',week:'W3',dateStart:'15/05/2025',dateEnd:'21/05/2025',filename:'',status:'Planned'},
+    {campaign:'Nhãn',brand:'Watch',channel:'Social (Facebook & TikTok)',week:'W2',dateStart:'08/05/2025',dateEnd:'14/05/2025',filename:'',status:'Aired'},
+    {campaign:'Nhãn',brand:'ARTA',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired'},
+    {campaign:'Chi Nhánh',brand:'MBC',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired'},
+    {campaign:'Chi Nhánh',brand:'HCM',channel:'Social (Facebook & TikTok)',week:'W2',dateStart:'08/05/2025',dateEnd:'14/05/2025',filename:'',status:'Planned'},
+    {campaign:'Chi Nhánh',brand:'DNB',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired'},
+    {campaign:'Chi Nhánh',brand:'MTG',channel:'Social (Facebook & TikTok)',week:'W3',dateStart:'15/05/2025',dateEnd:'21/05/2025',filename:'',status:'Planned'},
+    {campaign:'Chi Nhánh',brand:'TNN',channel:'Social (Facebook & TikTok)',week:'W2',dateStart:'08/05/2025',dateEnd:'14/05/2025',filename:'',status:'Aired'},
+    {campaign:'Chi Nhánh',brand:'MTY',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired'}
+  ]
+};
+
+var DATA = JSON.parse(JSON.stringify(DEFAULT));
+
+/* ═══════════════════════════════════════════════
+   SETTINGS HELPERS
+═══════════════════════════════════════════════ */
+function toggleGS(){
+  document.getElementById('gsToggle').classList.toggle('open');
+  document.getElementById('gsBody').classList.toggle('open');
+}
+function switchTab(t){
+  ['url','paste','gh'].forEach(function(id){
+    document.getElementById('tab-'+id).classList.toggle('active', id===t);
+    document.getElementById('pane-'+id).classList.toggle('active', id===t);
+  });
+}
+function setStatus(m,c){
+  var e=document.getElementById('gsStatus');
+  e.textContent=m; e.style.color=c||'#6B7280';
+}
+function saveGhBase(){
+  ghBase = document.getElementById('ghBaseInput').value.trim();
+  localStorage.setItem('pnj_gh_base', ghBase);
+  setStatus('✓ GitHub base URL đã lưu: ' + (ghBase||'(trống)'), '#059669');
+  renderGallery();
+}
+function getAdUrl(filename){
+  if(!filename || filename==='-' || filename==='') return '';
+  if(filename.startsWith('http')) return filename;
+  if(!ghBase) return '';
+  return ghBase.replace(/\/$/, '') + '/' + filename;
+}
+
+/* ═══════════════════════════════════════════════
+   TEMPLATE DOWNLOAD
+═══════════════════════════════════════════════ */
+function downloadTemplate(){
+  var header = '#,Month,Week,Date_Start,Date_End,Campaign,Brand / Chi Nhánh,Channel,Budget,Reach,Click,Ad_Filename,Ad_Status';
+  var rows = [
+    '1,T5/2025,W1,01/05/2025,07/05/2025,Omni,-,Social (Facebook & TikTok),966221259,4467227,500763,omni_fb_w1.jpg,Aired',
+    '2,T5/2025,W1,01/05/2025,07/05/2025,Omni,-,Google,0,0,0,omni_gg_w1.jpg,Planned',
+    '3,T5/2025,W1,01/05/2025,07/05/2025,Retail,-,Social (Facebook & TikTok),241555315,1116807,125191,retail_fb_w1.jpg,Aired',
+    '4,T5/2025,W1,01/05/2025,07/05/2025,Nhãn,Disney,Social (Facebook & TikTok),142283093,592846,71142,disney_social_w1.jpg,Aired',
+    '5,T5/2025,W1,01/05/2025,07/05/2025,Nhãn,Disney,Google,60978469,254077,30489,disney_gg_w1.jpg,Planned',
+    '6,T5/2025,W1,01/05/2025,07/05/2025,Nhãn,MANCODE,Social (Facebook & TikTok),48824587,203436,24412,mancode_social_w1.jpg,Aired',
+    '7,T5/2025,W1,01/05/2025,07/05/2025,Nhãn,Sanrio,Social (Facebook & TikTok),57545194,479550,28773,sanrio_social_w1.jpg,Aired',
+    '8,T5/2025,W1,01/05/2025,07/05/2025,Nhãn,Trendy,Social (Facebook & TikTok),46513979,387617,23257,trendy_social_w1.jpg,Planned',
+    '9,T5/2025,W1,01/05/2025,07/05/2025,Nhãn,Style,Social (Facebook & TikTok),43038294,179325,28692,style_social_w1.jpg,Planned',
+    '10,T5/2025,W1,01/05/2025,07/05/2025,Nhãn,Watch,Social (Facebook & TikTok),17161843,71508,8581,watch_social_w1.jpg,Aired',
+    '11,T5/2025,W1,01/05/2025,07/05/2025,Nhãn,ARTA,Social (Facebook & TikTok),18897805,157483,9449,arta_social_w1.jpg,Aired',
+    '12,T5/2025,W1,01/05/2025,07/05/2025,Chi Nhánh,MBC,Social (Facebook & TikTok),215133257,597592,71711,mbc_social_w1.jpg,Aired',
+    '13,T5/2025,W1,01/05/2025,07/05/2025,Chi Nhánh,HCM,Social (Facebook & TikTok),146515902,406989,48839,hcm_social_w1.jpg,Planned',
+    '14,T5/2025,W1,01/05/2025,07/05/2025,Chi Nhánh,DNB,Social (Facebook & TikTok),134458286,373495,44819,dnb_social_w1.jpg,Aired',
+    '15,T5/2025,W1,01/05/2025,07/05/2025,Chi Nhánh,MTG,Social (Facebook & TikTok),115657924,321272,38553,mtg_social_w1.jpg,Planned',
+    '16,T5/2025,W1,01/05/2025,07/05/2025,Chi Nhánh,TNN,Social (Facebook & TikTok),114309375,317526,38103,tnn_social_w1.jpg,Aired',
+    '17,T5/2025,W1,01/05/2025,07/05/2025,Chi Nhánh,MTY,Social (Facebook & TikTok),67189480,186637,22396,mty_social_w1.jpg,Aired'
+  ];
+  var csv = header + '\n' + rows.join('\n');
+  var blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  a.href=url; a.download='PNJ_MediaPlan_Template_v2.csv';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+/* ═══════════════════════════════════════════════
+   DATA HELPERS
+═══════════════════════════════════════════════ */
+function fmtB(v){ return Math.round(v).toLocaleString('vi-VN'); }
+function fmtS(v){ return v>=1e9?(v/1e9).toFixed(2)+'B':v>=1e6?(v/1e6).toFixed(1)+'M':fmtB(v); }
+function calcEff(c,m){ return m>0?Math.round(c/m):0; }
+function pct(a,b){ return b>0?((a/b)*100).toFixed(1):'0.0'; }
+function norm(s){ return s.toLowerCase().replace(/[^a-z0-9]/g,''); }
+function stakeNormId(label){
+  var map={'nhãn':'nhan','nhan':'nhan','chi nhánh':'chinhanh','chinhánh':'chinhanh',
+           'retail':'retail','omni':'omni'};
+  return map[label.toLowerCase()] || label.toLowerCase().replace(/\s+/g,'_');
+}
+
+function campToGFilter(camp){
+  var c = camp.toLowerCase();
+  if(c.indexOf('omni')>=0) return 'omni';
+  if(c.indexOf('retail')>=0) return 'retail';
+  if(c.indexOf('nhãn')>=0||c.indexOf('nhan')>=0||c.indexOf('brand')>=0) return 'nhan';
+  if(c.indexOf('chi')>=0||c.indexOf('branch')>=0) return 'chinhanh';
+  return 'other';
+}
+
+/* ═══════════════════════════════════════════════
+   RESET & LOAD
+═══════════════════════════════════════════════ */
+function resetData(){
+  DATA = JSON.parse(JSON.stringify(DEFAULT));
+  document.getElementById('hTitle').textContent = 'Master Media Allocation Plan — T5/2025';
+  document.getElementById('hBadge').textContent = 'APPROVED TEMPLATE';
+  document.getElementById('hDateRange').style.display = 'none';
+  document.getElementById('hWeekInfo').style.display = 'none';
+  document.getElementById('gSyncBadge').style.display = 'none';
+  galleryFilter = 'all'; gallerySubFilter = '';
+  syncGFilterButtons('all');
+  render();
+  setStatus('Đã khôi phục dữ liệu Template T5/2025', '#4B5563');
+}
+
+function loadPasted(){
+  var csv = document.getElementById('csvPaste').value.trim();
+  if(!csv){ setStatus('Lỗi: Chưa có nội dung CSV.','#DC2626'); return; }
+  setStatus('Đang parse...','#C8973A');
+  try{ parseSheet(csv); } catch(e){ setStatus('Lỗi parse: '+e.message,'#DC2626'); }
+}
+
+function loadSheet(){
+  var url = document.getElementById('sheetUrl').value.trim();
+  if(!url){ setStatus('Lỗi: Vui lòng dán link CSV.','#DC2626'); return; }
+  setStatus('⏳ Đang kết nối...','#C8973A');
+  fetch(url)
+    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); })
+    .then(function(csv){ if(!csv||csv.trim().length<30) throw new Error('Empty'); parseSheet(csv); })
+    .catch(function(){
+      var proxy = 'https://corsproxy.io/?'+encodeURIComponent(url);
+      setStatus('⏳ Thử qua CORS proxy...','#C8973A');
+      fetch(proxy)
+        .then(function(r){ return r.text(); })
+        .then(function(csv){ if(!csv||csv.trim().length<30) throw new Error('Empty via proxy'); parseSheet(csv); })
+        .catch(function(){
+          setStatus('❌ Không kết nối được. Dùng tab "Dán CSV".','#D97706');
+          switchTab('paste');
+        });
+    });
+}
+
+/* ═══════════════════════════════════════════════
+   PARSE SHEET  (supports old + new column format)
+═══════════════════════════════════════════════ */
+function parseSheet(csv){
+  var rows = [];
+  csv.trim().split('\n').forEach(function(line){
+    var cells=[],inQ=false,cur='';
+    for(var i=0;i<line.length;i++){
+      var c=line[i];
+      if(c==='"'){inQ=!inQ;}
+      else if(c===','&&!inQ){cells.push(cur.trim());cur='';}
+      else cur+=c;
+    }
+    cells.push(cur.trim()); rows.push(cells);
+  });
+
+  // Auto-detect header row
+  var headerIdx=0;
+  for(var ri=0;ri<Math.min(10,rows.length);ri++){
+    var joined=rows[ri].join('||').toLowerCase();
+    if(joined.indexOf('campaign')>=0&&joined.indexOf('budget')>=0){headerIdx=ri;break;}
+  }
+
+  var h = rows[headerIdx].map(norm);
+  function col(kw){
+    var k=norm(kw);
+    for(var i=0;i<h.length;i++) if(h[i]===k||h[i].indexOf(k)===0) return i;
+    return -1;
+  }
+
+  var ix = {
+    month:      col('month'),
+    week:       col('week'),
+    dateStart:  h.indexOf(norm('date_start'))>=0 ? h.indexOf(norm('date_start')) : col('datestart'),
+    dateEnd:    h.indexOf(norm('date_end'))>=0   ? h.indexOf(norm('date_end'))   : col('dateend'),
+    stake:      col('campaign'),
+    brand:      col('brand'),
+    ch:         col('channel'),
+    budget:     col('budget'),
+    reach:      col('reach'),
+    click:      col('clickomni')>=0 ? col('clickomni') : col('click'),
+    adFilename: col('adfilename')>=0 ? col('adfilename') : (col('filename')>=0?col('filename'):col('adimage')),
+    adStatus:   col('adstatus')>=0  ? col('adstatus')   : col('status')
+  };
+
+  if(ix.budget<0||ix.stake<0){
+    setStatus('Lỗi: Không tìm được cột Campaign/Budget.','#DC2626'); return;
+  }
+
+  function parseNum(s){
+    if(!s) return 0;
+    var clean=s.replace(/[^0-9.]/g,'');
+    return parseFloat(clean)||0;
+  }
+
+  var sMap={}, chMap={}, adsList=[];
+  var tot={budget:0,reach:0,click:0};
+  var mo='', allDates=[], allWeeks=[];
+
+  var sColors={'retail':'#C8973A','omni':'#1A2E4A','nhãn':'#3B6A9C','chinhánh':'#10B981','chi nhánh':'#10B981','nhan':'#3B6A9C'};
+  var bColors={'disney':'#0070B9','mancode':'#374151','sanrio':'#D95B9A','trendy':'#7C3AED',
+               'style':'#D97706','watch':'#059669','arta':'#DC2626',
+               'mbc':'#1A2E4A','hcm':'#C8973A','dnb':'#3B6A9C','mtg':'#7C3AED','tnn':'#059669','mty':'#D97706'};
+
+  for(var i=headerIdx+1;i<rows.length;i++){
+    var r=rows[i]; if(!r||r.length<3) continue;
+    var b  = parseNum(r[ix.budget]);
+    var rc = parseNum(r[ix.reach]);
+    var cl = parseNum(r[ix.click]);
+    var sk = (r[ix.stake]||'').replace(/"/g,'').trim();
+    var br = ix.brand>=0  ? (r[ix.brand]||'').replace(/"/g,'').trim()  : '';
+    var ch = ix.ch>=0     ? (r[ix.ch]||'').replace(/"/g,'').trim()     : '';
+    var wk = ix.week>=0   ? (r[ix.week]||'').replace(/"/g,'').trim()   : '';
+    var ds = ix.dateStart>=0 ? (r[ix.dateStart]||'').replace(/"/g,'').trim() : '';
+    var de = ix.dateEnd>=0   ? (r[ix.dateEnd]||'').replace(/"/g,'').trim()   : '';
+    var af = ix.adFilename>=0? (r[ix.adFilename]||'').replace(/"/g,'').trim(): '';
+    var as_ = ix.adStatus>=0 ? (r[ix.adStatus]||'').replace(/"/g,'').trim()  : '';
+    if(!sk||b===0) continue;
+    if(ix.month>=0&&r[ix.month]) mo=r[ix.month].replace(/"/g,'').trim();
+    if(ds) allDates.push(ds);
+    if(de) allDates.push(de);
+    if(wk&&allWeeks.indexOf(wk)<0) allWeeks.push(wk);
+
+    tot.budget+=b; tot.reach+=rc; tot.click+=cl;
+    var chColor=ch.toLowerCase().indexOf('google')>=0?'#EA4335':'#1877F2';
+    if(ch){
+      if(!chMap[ch])chMap[ch]={budget:0,reach:0,click:0,color:chColor};
+      chMap[ch].budget+=b; chMap[ch].reach+=rc; chMap[ch].click+=cl;
+    }
+    if(!sMap[sk])sMap[sk]={budget:0,reach:0,click:0,kids:{},exp:false};
+    sMap[sk].budget+=b; sMap[sk].reach+=rc; sMap[sk].click+=cl;
+    if(br&&br!=='-'){
+      sMap[sk].exp=true;
+      if(!sMap[sk].kids[br])sMap[sk].kids[br]={budget:0,reach:0,click:0,ch:[]};
+      sMap[sk].kids[br].budget+=b; sMap[sk].kids[br].reach+=rc; sMap[sk].kids[br].click+=cl;
+      if(ch)sMap[sk].kids[br].ch.push({l:ch,c:chColor,budget:b,reach:rc,click:cl});
+    }
+    // Build ads list
+    adsList.push({
+      campaign: sk, brand: br||'-', channel: ch, week: wk,
+      dateStart: ds, dateEnd: de, filename: af,
+      status: as_||'Planned'
+    });
+  }
+
+  DATA.total    = tot;
+  DATA.month    = mo || DATA.month;
+  DATA.weeks    = allWeeks;
+  DATA.dateStart= allDates.length ? allDates[0] : '';
+  DATA.dateEnd  = allDates.length ? allDates[allDates.length-1] : '';
+  DATA.channels = Object.entries(chMap).map(function(e){return{label:e[0],color:e[1].color,budget:e[1].budget,reach:e[1].reach,click:e[1].click};});
+  DATA.stakes   = Object.entries(sMap).map(function(e){
+    var k=e[0],v=e[1];
+    var skColor=sColors[k.toLowerCase()]||sColors[norm(k)]||'#6B7280';
+    return {id:stakeNormId(k),label:k,badge:Object.keys(v.kids).length>0?(Object.keys(v.kids).length+' mục'):'',
+            color:skColor,budget:v.budget,reach:v.reach,click:v.click,exp:v.exp,
+            kids:Object.entries(v.kids).map(function(ce){
+              return {label:ce[0],color:bColors[ce[0].toLowerCase()]||'#059669',
+                      budget:ce[1].budget,reach:ce[1].reach,click:ce[1].click,ch:ce[1].ch};
+            })};
+  });
+  DATA.ads = adsList;
+
+  // Update header
+  document.getElementById('hTitle').textContent = 'Master Media Allocation Plan — ' + DATA.month;
+  document.getElementById('hBadge').textContent = 'LIVE DATA: ' + DATA.month;
+  document.getElementById('gSyncBadge').style.display = '';
+
+  if(DATA.dateStart && DATA.dateEnd){
+    document.getElementById('hDateRange').style.display = 'flex';
+    document.getElementById('hDateText').textContent = DATA.dateStart + ' – ' + DATA.dateEnd;
+  }
+  if(DATA.weeks.length){
+    document.getElementById('hWeekInfo').style.display = '';
+    document.getElementById('hWeekInfo').textContent = DATA.weeks.sort().join(' · ');
+  }
+
+  galleryFilter='all'; gallerySubFilter='';
+  syncGFilterButtons('all');
+  render();
+  var rowsLoaded=Object.values(sMap).reduce(function(s,v){return s+1+Object.keys(v.kids).length;},0);
+  setStatus('✓ Sync thành công lúc '+new Date().toLocaleTimeString('vi-VN')+
+            ' · Header dòng '+(headerIdx+1)+
+            ' · '+rowsLoaded+' dòng · '+adsList.length+' ads','#059669');
+}
+
+/* ═══════════════════════════════════════════════
+   VIEW LOGIC
+═══════════════════════════════════════════════ */
+function changeView(v, btn){
+  currentView = v;
+  document.querySelectorAll('.view-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  // Sync gallery filter with view
+  var fMap = {all:'all', brands:'nhan', branches:'chinhanh'};
+  galleryFilter = fMap[v] || 'all';
+  gallerySubFilter = '';
+  syncGFilterButtons(galleryFilter);
+  render();
+}
+
+function getActiveData(){
+  if(currentView==='all') return DATA;
+  var isNhan = currentView==='brands';
+  var src = DATA.stakes.find(function(s){
+    var nid = stakeNormId(s.label);
+    return isNhan ? (nid==='nhan') : (nid==='chinhanh');
+  });
+  if(!src) return DATA;
+  var total = {budget:src.budget, reach:src.reach, click:src.click};
+  var stakes = src.kids.map(function(k,i){
+    return {id:src.id+'_kid_'+i, label:k.label, badge:k.pct||'', color:k.color,
+            budget:k.budget, reach:k.reach, click:k.click,
+            exp:k.ch&&k.ch.length>0,
+            kids:(k.ch||[]).map(function(c){return{label:c.l,color:c.c,budget:c.budget,reach:c.reach,click:c.click,ch:[]};})};
+  });
+  var chMap = {};
+  src.kids.forEach(function(k){
+    (k.ch||[]).forEach(function(c){
+      if(!chMap[c.l])chMap[c.l]={label:c.l,color:c.c,budget:0,reach:0,click:0};
+      chMap[c.l].budget+=c.budget; chMap[c.l].reach+=c.reach; chMap[c.l].click+=c.click;
+    });
+  });
+  var channels = Object.values(chMap);
+  if(!channels.length) channels=[{label:'Social',color:'#1877F2',budget:src.budget,reach:src.reach,click:src.click}];
+  return {month:DATA.month, total:total, stakes:stakes, channels:channels};
+}
+
+/* ═══════════════════════════════════════════════
+   RENDER KPIs
+═══════════════════════════════════════════════ */
+function renderKPIs(){
+  var d=getActiveData(), t=d.total;
+  document.getElementById('kpiBudget').textContent  = t.budget>=1e9?(t.budget/1e9).toFixed(2)+' tỷ':(t.budget/1e6).toFixed(1)+'M';
+  document.getElementById('kpiBudgetS').textContent = t.budget.toLocaleString('vi-VN')+' VND';
+  document.getElementById('kpiReach').textContent   = t.reach>=1e6?(t.reach/1e6).toFixed(2)+'M':(t.reach/1e3).toFixed(0)+'K';
+  document.getElementById('kpiReachS').textContent  = t.reach.toLocaleString('vi-VN')+' lượt tiếp cận';
+  document.getElementById('kpiClick').textContent   = t.click>=1e6?(t.click/1e6).toFixed(2)+'M':(t.click/1e3).toFixed(0)+'K';
+  document.getElementById('kpiClickS').textContent  = t.click.toLocaleString('vi-VN')+' clicks';
+}
+
+/* ═══════════════════════════════════════════════
+   RENDER DONUT CHART
+═══════════════════════════════════════════════ */
+function makeLegend(arr, totV){
+  return arr.slice().sort(function(a,b){return b.budget-a.budget;}).map(function(d){
+    return '<div class="leg-item"><span class="leg-dot" style="background:'+d.color+'"></span>'
+      +'<span class="leg-label">'+d.label+'</span>'
+      +'<span class="leg-val">'+fmtS(d.budget)+'</span>'
+      +'<span class="leg-sub">'+pct(d.budget,totV)+'%</span></div>';
+  }).join('');
+}
+
+function renderChart(){
+  var d = getActiveData();
+  if(stakeInst){stakeInst.destroy();stakeInst=null;}
+  var ctx = document.getElementById('stakeChart');
+  stakeInst = new Chart(ctx,{type:'doughnut',
+    data:{labels:d.stakes.map(function(x){return x.label;}),
+          datasets:[{data:d.stakes.map(function(x){return x.budget;}),
+                     backgroundColor:d.stakes.map(function(x){return x.color;}),
+                     borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:false,cutout:'66%',
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:function(c){return ' '+c.label+': '+fmtS(c.raw)+' ('+pct(c.raw,d.total.budget)+'%)';}}}}
+    }
+  });
+  var totV = d.stakes.reduce(function(s,x){return s+x.budget;},0);
+  document.getElementById('stakeLegend').innerHTML = makeLegend(d.stakes, totV);
+
+  var T={all:'Cơ cấu phân bổ Ngân sách',brands:'Phân bổ 7 Nhãn Hàng',branches:'Phân bổ 6 Chi Nhánh'};
+  document.getElementById('chart1Title').textContent = T[currentView]||T.all;
+}
+
+/* ═══════════════════════════════════════════════
+   GALLERY FILTER LOGIC
+═══════════════════════════════════════════════ */
+var NHAN_BRANDS    = ['Disney','MANCODE','Sanrio','Trendy','Style','Watch','ARTA'];
+var CN_BRANCHES    = ['MBC','HCM','DNB','MTG','TNN','MTY'];
+
+function syncGFilterButtons(f){
+  document.querySelectorAll('#galleryFilters .g-btn').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-f')===f);
+  });
+}
+
+function setGFilter(btn, f){
+  galleryFilter    = f;
+  gallerySubFilter = '';
+  syncGFilterButtons(f);
+  renderGallery();
+}
+
+function setGSubFilter(val){
+  gallerySubFilter = (gallerySubFilter===val)?'':val;
+  document.querySelectorAll('.g-chip').forEach(function(c){
+    c.classList.toggle('active', c.getAttribute('data-v')===gallerySubFilter);
+  });
+  renderGallery();
+}
+
+function getSubFilterOptions(){
+  // Dynamically build from DATA.ads
+  if(galleryFilter==='nhan'){
+    var brands=[];
+    DATA.ads.forEach(function(a){
+      if(campToGFilter(a.campaign)==='nhan'&&a.brand!=='-'&&brands.indexOf(a.brand)<0)
+        brands.push(a.brand);
+    });
+    return brands.length ? brands : NHAN_BRANDS;
+  }
+  if(galleryFilter==='chinhanh'){
+    var branches=[];
+    DATA.ads.forEach(function(a){
+      if(campToGFilter(a.campaign)==='chinhanh'&&a.brand!=='-'&&branches.indexOf(a.brand)<0)
+        branches.push(a.brand);
+    });
+    return branches.length ? branches : CN_BRANCHES;
+  }
+  return [];
+}
+
+function renderGallery(){
+  var subEl = document.getElementById('gallerySub');
+  var subs  = getSubFilterOptions();
+  if(subs.length){
+    subEl.innerHTML = subs.map(function(s){
+      var active = gallerySubFilter===s?'active':'';
+      return '<span class="g-chip '+active+'" data-v="'+s+'" onclick="setGSubFilter(\''+s+'\')">'+(s||'—')+'</span>';
+    }).join('');
+  } else {
+    subEl.innerHTML='';
+  }
+
+  // Filter ads
+  var filtered = DATA.ads.filter(function(a){
+    var cf = campToGFilter(a.campaign);
+    if(galleryFilter!=='all' && cf!==galleryFilter) return false;
+    if(gallerySubFilter && a.brand!==gallerySubFilter) return false;
+    return true;
+  });
+
+  document.getElementById('gCount').textContent = filtered.length + ' ads';
+
+  if(!filtered.length){
+    document.getElementById('galleryGrid').innerHTML =
+      '<div class="gallery-empty"><div class="gallery-empty-icon">📭</div>Chưa có ads trong mục này</div>';
+    return;
+  }
+
+  var html = filtered.map(function(ad, idx){
+    var adUrl     = getAdUrl(ad.filename);
+    var statusCls = (ad.status||'').toLowerCase()==='aired'?'aired':'planned';
+    var statusTxt = statusCls==='aired'?'AIRED':'PLANNED';
+    var chLower   = (ad.channel||'').toLowerCase();
+    var chCls     = chLower.indexOf('google')>=0?'google':chLower.indexOf('tiktok')>=0?'tiktok':'social';
+    var chShort   = chLower.indexOf('google')>=0?'Google':chLower.indexOf('tiktok')>=0?'TikTok':'Social';
+    var brand     = ad.brand!=='-'?ad.brand:ad.campaign;
+    var week      = ad.week?' · '+ad.week:'';
+
+    var imgHtml = adUrl
+      ? '<img class="ad-thumb" src="'+adUrl+'" alt="'+brand+'" onerror="this.parentNode.innerHTML=adPlaceholderHtml(\''+escJ(brand)+'\')">'
+      : adPlaceholderHtml(brand);
+
+    return '<div class="ad-card" onclick="openModal('+idx+')">'
+      +'<div class="ad-thumb-wrap">'+imgHtml+'</div>'
+      +'<span class="ad-status-badge '+statusCls+'">'+statusTxt+'</span>'
+      +'<span class="ad-ch-badge '+chCls+'">'+chShort+'</span>'
+      +'<div class="ad-overlay">'
+      +'<div class="ad-brand">'+brand+'</div>'
+      +'<div class="ad-meta">'+ad.campaign+week+'</div>'
+      +'</div></div>';
+  }).join('');
+
+  document.getElementById('galleryGrid').innerHTML = html;
+  // Store filtered for modal reference
+  window._filteredAds = filtered;
+}
+
+function adPlaceholderHtml(brand){
+  var colors=['#1A2E4A','#3B6A9C','#C8973A','#10B981','#7C3AED','#D97706','#059669'];
+  var bg = colors[Math.abs(hashStr(brand)) % colors.length];
+  var initials = brand.split(' ').slice(0,2).map(function(w){return w[0]||'';}).join('').toUpperCase();
+  return '<div class="ad-placeholder" style="background:'+bg+'15;">'
+    +'<div style="font-size:28px;font-weight:900;color:'+bg+';opacity:.6;">'+initials+'</div>'
+    +'<div class="ad-placeholder-text" style="color:'+bg+';">'+brand+'</div>'
+    +'</div>';
+}
+function hashStr(s){var h=0;for(var i=0;i<s.length;i++)h=(h<<5)-h+s.charCodeAt(i)|0;return h;}
+function escJ(s){return s.replace(/'/g,"\\'");}
+
+/* ═══════════════════════════════════════════════
+   AD MODAL
+═══════════════════════════════════════════════ */
+function openModal(idx){
+  var ads = window._filteredAds || DATA.ads;
+  var ad  = ads[idx];
+  if(!ad) return;
+
+  var adUrl = getAdUrl(ad.filename);
+  var statusCls = (ad.status||'').toLowerCase()==='aired'?'aired':'planned';
+  var brand = ad.brand!=='-'?ad.brand:ad.campaign;
+
+  document.getElementById('modalBrand').textContent = brand;
+
+  var tags = [
+    {cls:'camp', txt:ad.campaign},
+    {cls:'ch',   txt:ad.channel||'—'},
+    ad.week ? {cls:'week',txt:ad.week} : null,
+    ad.dateStart && ad.dateEnd ? {cls:'date',txt:ad.dateStart+' – '+ad.dateEnd} : null
+  ].filter(Boolean);
+  document.getElementById('modalTags').innerHTML = tags.map(function(t){
+    return '<span class="modal-tag '+t.cls+'">'+t.txt+'</span>';
+  }).join('');
+
+  document.getElementById('modalStatus').innerHTML =
+    '<span class="modal-status '+statusCls+'">● '+(statusCls==='aired'?'Đã Aired':'Đang Planned')+'</span>';
+
+  var img = document.getElementById('modalImg');
+  var ph  = document.getElementById('modalPh');
+  if(adUrl){ img.src=adUrl; img.style.display='block'; ph.style.display='none'; }
+  else      { img.src=''; img.style.display='none'; ph.style.display='flex'; }
+
+  document.getElementById('adModal').classList.add('open');
+}
+
+function closeModal(e){
+  if(e && e.target!==document.getElementById('adModal')) return;
+  document.getElementById('adModal').classList.remove('open');
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.getElementById('adModal').classList.remove('open');});
+
+/* ═══════════════════════════════════════════════
+   RENDER TABLE
+═══════════════════════════════════════════════ */
+function renderTable(){
+  var viewMeta = {
+    all:      {title:'Bảng phân bổ chi tiết & Phân tích tương quan', col:'Campaign'},
+    brands:   {title:'Phân bổ chi tiết — 7 Nhãn Hàng',               col:'Nhãn / Brand'},
+    branches: {title:'Phân bổ chi tiết — 6 Chi Nhánh',               col:'Chi Nhánh / Khu vực'}
+  };
+  var meta = viewMeta[currentView]||viewMeta.all;
+  document.getElementById('tableTitle').textContent = meta.title;
+  document.getElementById('colCamp').textContent    = meta.col;
+
+  var d=getActiveData(), t=d.total, html='';
+  var maxB=d.stakes.length?Math.max.apply(null,d.stakes.map(function(s){return s.budget;})):1;
+  var maxR=d.stakes.length?Math.max.apply(null,d.stakes.map(function(s){return s.reach;})):1;
+  var maxC=d.stakes.length?Math.max.apply(null,d.stakes.map(function(s){return s.click;})):1;
+  var avgCPC=calcEff(t.budget,t.click);
+
+  d.stakes.forEach(function(s){
+    var expCls=s.exp?' exp':'';
+    var oc=s.exp?'onclick="toggleRow(\''+s.id+'\')"':'';
+    var arr=s.exp?'<span class="arr-icon" id="arr_'+s.id+'">▶</span>':'';
+    var cpcCls=calcEff(s.budget,s.click)>avgCPC*1.2?'eff-warn':'eff-good';
+    html+='<tr class="p-row'+expCls+'" id="pr_'+s.id+'" '+oc+'>';
+    html+='<td class="p-name"><div class="row-label"><span class="dot" style="background:'+s.color+'"></span>'
+         +s.label+(s.badge?'<span class="badge-sm">'+s.badge+'</span>':'')+arr+'</div></td>';
+    html+=bCell(s.budget,maxB,s.color,t.budget);
+    html+=bCell(s.reach,maxR,'#166534',t.reach);
+    html+=bCell(s.click,maxC,'#92400E',t.click);
+    html+='<td class="eff-cell '+cpcCls+'">'+fmtB(calcEff(s.budget,s.click))+'</td>';
+    html+='<td class="eff-cell">'+fmtB(calcEff(s.budget,s.reach))+'</td></tr>';
+
+    if(s.exp&&s.kids.length){
+      var kMaxB=Math.max.apply(null,s.kids.map(function(k){return k.budget;}));
+      var kMaxR=Math.max.apply(null,s.kids.map(function(k){return k.reach;}));
+      var kMaxC=Math.max.apply(null,s.kids.map(function(k){return k.click;}));
+      s.kids.forEach(function(kid,ki){
+        var kidId=s.id+'_'+ki;
+        var hasCh=kid.ch&&kid.ch.length>0;
+        var kArr=hasCh?'<span class="arr-icon">▶</span>':'';
+        var kOc=hasCh?'onclick="toggleKidRow(\''+kidId+'\')"':'';
+        html+='<tr class="c-row" id="cr_'+kidId+'" '+kOc+' style="cursor:'+(hasCh?'pointer':'default')+'">';
+        html+='<td style="padding-left:24px;"><div class="row-label">'
+             +'<span class="dot" style="background:'+kid.color+';width:6px;height:6px;"></span>'
+             +(kid.badge?'<span style="color:#9CA3AF;font-size:9.5px;min-width:40px;">'+kid.badge+'</span>':'')
+             +kid.label+kArr+'</div></td>';
+        html+=bCell(kid.budget,kMaxB,kid.color,s.budget);
+        html+=bCell(kid.reach,kMaxR,'#4ADE80',s.reach);
+        html+=bCell(kid.click,kMaxC,'#FBBF24',s.click);
+        html+='<td class="eff-cell" style="font-weight:500;">'+fmtB(calcEff(kid.budget,kid.click))+'</td>';
+        html+='<td class="eff-cell" style="font-weight:500;">'+fmtB(calcEff(kid.budget,kid.reach))+'</td></tr>';
+        if(hasCh) kid.ch.forEach(function(chd){
+          html+='<tr class="cc-row" id="ccr_'+kidId+'">';
+          html+='<td style="padding-left:44px;color:#6B7280;"><div class="row-label">'
+               +'<span style="width:5px;height:5px;border-radius:50%;background:'+chd.c+';display:inline-block;margin-right:5px;"></span>'
+               +chd.l+'</div></td>';
+          html+='<td style="text-align:right;color:#6B7280;padding:5px 12px;font-family:DM Mono,monospace;">'+fmtB(chd.budget)+'</td>';
+          html+='<td style="text-align:right;color:#6B7280;padding:5px 12px;font-family:DM Mono,monospace;">'+fmtB(chd.reach)+'</td>';
+          html+='<td style="text-align:right;color:#6B7280;padding:5px 12px;font-family:DM Mono,monospace;">'+fmtB(chd.click)+'</td>';
+          html+='<td class="eff-cell" style="color:#9CA3AF;font-weight:400;">'+fmtB(calcEff(chd.budget,chd.click))+'</td>';
+          html+='<td class="eff-cell" style="color:#9CA3AF;font-weight:400;">'+fmtB(calcEff(chd.budget,chd.reach))+'</td></tr>';
+        });
+      });
+    }
+  });
+  html+='<tr class="total-row"><td>TỔNG CỘNG</td>'
+       +'<td style="text-align:right;">'+fmtB(t.budget)+'</td>'
+       +'<td style="text-align:right;">'+fmtB(t.reach)+'</td>'
+       +'<td style="text-align:right;">'+fmtB(t.click)+'</td>'
+       +'<td class="eff-cell">'+fmtB(avgCPC)+'</td>'
+       +'<td class="eff-cell">'+fmtB(calcEff(t.budget,t.reach))+'</td></tr>';
+  document.getElementById('tableBody').innerHTML=html;
+}
+
+function bCell(val,maxVal,color,totVal){
+  var w=maxVal>0?(val/maxVal*100):0;
+  var p=totVal?pct(val,totVal)+'%':'';
+  return '<td class="data-cell"><div class="data-bar" style="width:'+w+'%;background:'+color+'"></div>'
+    +'<span class="data-val">'+fmtB(val)+'</span>'+(p?'<span class="data-pct">'+p+'</span>':'')+'</td>';
+}
+
+/* ═══════════════════════════════════════════════
+   TABLE TOGGLE
+═══════════════════════════════════════════════ */
+function toggleRow(id){
+  var pr=document.getElementById('pr_'+id), wasOpen=pr.classList.contains('open');
+  pr.classList.toggle('open');
+  document.querySelectorAll('[id^="cr_'+id+'_"]').forEach(function(r){
+    if(wasOpen){r.classList.remove('open');r.classList.remove('expanded');}
+    else r.classList.add('open');
+  });
+  if(wasOpen) document.querySelectorAll('[id^="ccr_'+id+'_"]').forEach(function(r){r.classList.remove('open');});
+}
+function toggleKidRow(kidId){
+  var pr=document.getElementById('cr_'+kidId), wasExp=pr.classList.contains('expanded');
+  pr.classList.toggle('expanded');
+  document.querySelectorAll('[id="ccr_'+kidId+'"]').forEach(function(r){
+    if(wasExp)r.classList.remove('open'); else r.classList.add('open');
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   MASTER RENDER
+═══════════════════════════════════════════════ */
+function render(){
+  renderKPIs();
+  renderChart();
+  renderGallery();
+  renderTable();
+}
+
+render();
+</script>
+</body>
+</html>
