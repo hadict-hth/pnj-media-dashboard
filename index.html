@@ -143,7 +143,24 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 .ad-status-badge.aired{background:rgba(16,185,129,.85);color:#fff;}
 .ad-status-badge.planned{background:rgba(245,158,11,.85);color:#fff;}
 .ad-ch-badge{position:absolute;top:6px;left:6px;padding:2px 6px;border-radius:10px;font-size:7.5px;font-weight:700;backdrop-filter:blur(4px);}
-.ad-ch-badge.social{background:rgba(24,119,242,.8);color:#fff;}
+.ad-ch-badge.fb    {background:rgba(24,119,242,.88);color:#fff;}
+.ad-ch-badge.social{background:rgba(24,119,242,.88);color:#fff;}
+.ad-ch-badge.tiktok{background:rgba(1,1,1,.82);color:#fff;}
+.ad-ch-badge.google{background:rgba(234,67,53,.88);color:#fff;}
+.ad-ch-badge.zalo  {background:rgba(0,104,255,.88);color:#fff;}
+.ad-ch-badge.yt    {background:rgba(255,0,0,.88);color:#fff;}
+/* Channel filter row */
+.gallery-ch-filters{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.g-ch-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#9CA3AF;margin-right:2px;white-space:nowrap;}
+.g-ch-btn{padding:3px 10px;border-radius:20px;font-size:9.5px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:#6B7280;transition:all .15s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
+.g-ch-btn:hover:not(.active){background:#F3F4F6;}
+.g-ch-btn.active{color:#fff;border-color:transparent;}
+.g-ch-btn[data-ch="all"].active    {background:var(--navy);}
+.g-ch-btn[data-ch="facebook"].active{background:#1877F2;}
+.g-ch-btn[data-ch="tiktok"].active  {background:#010101;}
+.g-ch-btn[data-ch="google"].active  {background:#EA4335;}
+.g-ch-btn[data-ch="zalo"].active    {background:#0068FF;}
+.g-ch-btn[data-ch="yt"].active      {background:#FF0000;}
 .ad-ch-badge.google{background:rgba(234,67,53,.8);color:#fff;}
 .ad-ch-badge.tiktok{background:rgba(0,0,0,.7);color:#fff;}
 .gallery-empty{text-align:center;padding:32px 8px;color:#9CA3AF;font-size:12px;grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:8px;}
@@ -354,6 +371,15 @@ tr.total-row td{padding:12px;background:#F3F4F6;font-weight:700;font-size:12px;c
       <button class="g-btn"        data-f="nhan"     onclick="setGFilter(this,'nhan')">Nhãn Hàng</button>
       <button class="g-btn"        data-f="chinhanh" onclick="setGFilter(this,'chinhanh')">Chi Nhánh</button>
     </div>
+    <!-- Channel Filter Pills -->
+    <div class="gallery-ch-filters" id="galleryChFilters">
+      <span class="g-ch-label">Platform</span>
+      <button class="g-ch-btn active" data-ch="all"      onclick="setGChFilter(this,'all')">Tất cả</button>
+      <button class="g-ch-btn"        data-ch="facebook"  onclick="setGChFilter(this,'facebook')">Facebook</button>
+      <button class="g-ch-btn"        data-ch="tiktok"    onclick="setGChFilter(this,'tiktok')">TikTok</button>
+      <button class="g-ch-btn"        data-ch="google"    onclick="setGChFilter(this,'google')">Google</button>
+      <button class="g-ch-btn"        data-ch="zalo"      onclick="setGChFilter(this,'zalo')">Zalo</button>
+    </div>
     <!-- Sub-filters (brand/branch chips) -->
     <div class="gallery-sub" id="gallerySub"></div>
     <!-- Ad Grid -->
@@ -418,6 +444,7 @@ if(ghBase) document.getElementById('ghBaseInput').value = ghBase;
 
 var galleryFilter    = 'all';
 var gallerySubFilter = '';
+var galleryChFilter  = 'all';  // platform: all|facebook|tiktok|google|zalo
 var currentView      = 'all';
 var stakeInst        = null;
 
@@ -461,24 +488,24 @@ var DEFAULT = {
   ],
   // ── Ad Preview data ──
   ads:[
-    {campaign:'Omni',brand:'-',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired'},
-    {campaign:'Omni',brand:'-',channel:'Google',week:'W2',dateStart:'08/05/2025',dateEnd:'14/05/2025',filename:'',status:'Planned'},
-    {campaign:'Retail',brand:'-',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired'},
-    {campaign:'Retail',brand:'-',channel:'Google',week:'W3',dateStart:'15/05/2025',dateEnd:'21/05/2025',filename:'',status:'Planned'},
-    {campaign:'Nhãn',brand:'Disney',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired'},
-    {campaign:'Nhãn',brand:'Disney',channel:'Google',week:'W2',dateStart:'08/05/2025',dateEnd:'14/05/2025',filename:'',status:'Planned'},
-    {campaign:'Nhãn',brand:'MANCODE',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired'},
-    {campaign:'Nhãn',brand:'Sanrio',channel:'Social (Facebook & TikTok)',week:'W2',dateStart:'08/05/2025',dateEnd:'14/05/2025',filename:'',status:'Aired'},
-    {campaign:'Nhãn',brand:'Trendy',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Planned'},
-    {campaign:'Nhãn',brand:'Style',channel:'Social (Facebook & TikTok)',week:'W3',dateStart:'15/05/2025',dateEnd:'21/05/2025',filename:'',status:'Planned'},
-    {campaign:'Nhãn',brand:'Watch',channel:'Social (Facebook & TikTok)',week:'W2',dateStart:'08/05/2025',dateEnd:'14/05/2025',filename:'',status:'Aired'},
-    {campaign:'Nhãn',brand:'ARTA',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired'},
-    {campaign:'Chi Nhánh',brand:'MBC',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired'},
-    {campaign:'Chi Nhánh',brand:'HCM',channel:'Social (Facebook & TikTok)',week:'W2',dateStart:'08/05/2025',dateEnd:'14/05/2025',filename:'',status:'Planned'},
-    {campaign:'Chi Nhánh',brand:'DNB',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired'},
-    {campaign:'Chi Nhánh',brand:'MTG',channel:'Social (Facebook & TikTok)',week:'W3',dateStart:'15/05/2025',dateEnd:'21/05/2025',filename:'',status:'Planned'},
-    {campaign:'Chi Nhánh',brand:'TNN',channel:'Social (Facebook & TikTok)',week:'W2',dateStart:'08/05/2025',dateEnd:'14/05/2025',filename:'',status:'Aired'},
-    {campaign:'Chi Nhánh',brand:'MTY',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired'}
+    {campaign:'Omni',brand:'-',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired',adChannel:'Facebook'},
+    {campaign:'Omni',brand:'-',channel:'Google',week:'W2',dateStart:'08/05/2025',dateEnd:'14/05/2025',filename:'',status:'Planned',adChannel:'Google'},
+    {campaign:'Retail',brand:'-',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired',adChannel:'Facebook'},
+    {campaign:'Retail',brand:'-',channel:'Google',week:'W3',dateStart:'15/05/2025',dateEnd:'21/05/2025',filename:'',status:'Planned',adChannel:'Google'},
+    {campaign:'Nhãn',brand:'Disney',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired',adChannel:'Facebook'},
+    {campaign:'Nhãn',brand:'Disney',channel:'Google',week:'W2',dateStart:'08/05/2025',dateEnd:'14/05/2025',filename:'',status:'Planned',adChannel:'Google'},
+    {campaign:'Nhãn',brand:'MANCODE',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired',adChannel:'Facebook'},
+    {campaign:'Nhãn',brand:'Sanrio',channel:'Social (Facebook & TikTok)',week:'W2',dateStart:'08/05/2025',dateEnd:'14/05/2025',filename:'',status:'Aired',adChannel:'Facebook'},
+    {campaign:'Nhãn',brand:'Trendy',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Planned',adChannel:'Facebook'},
+    {campaign:'Nhãn',brand:'Style',channel:'Social (Facebook & TikTok)',week:'W3',dateStart:'15/05/2025',dateEnd:'21/05/2025',filename:'',status:'Planned',adChannel:'Facebook'},
+    {campaign:'Nhãn',brand:'Watch',channel:'Social (Facebook & TikTok)',week:'W2',dateStart:'08/05/2025',dateEnd:'14/05/2025',filename:'',status:'Aired',adChannel:'Facebook'},
+    {campaign:'Nhãn',brand:'ARTA',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired',adChannel:'Facebook'},
+    {campaign:'Chi Nhánh',brand:'MBC',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired',adChannel:'Facebook'},
+    {campaign:'Chi Nhánh',brand:'HCM',channel:'Social (Facebook & TikTok)',week:'W2',dateStart:'08/05/2025',dateEnd:'14/05/2025',filename:'',status:'Planned',adChannel:'Facebook'},
+    {campaign:'Chi Nhánh',brand:'DNB',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired',adChannel:'Facebook'},
+    {campaign:'Chi Nhánh',brand:'MTG',channel:'Social (Facebook & TikTok)',week:'W3',dateStart:'15/05/2025',dateEnd:'21/05/2025',filename:'',status:'Planned',adChannel:'Facebook'},
+    {campaign:'Chi Nhánh',brand:'TNN',channel:'Social (Facebook & TikTok)',week:'W2',dateStart:'08/05/2025',dateEnd:'14/05/2025',filename:'',status:'Aired',adChannel:'Facebook'},
+    {campaign:'Chi Nhánh',brand:'MTY',channel:'Social (Facebook & TikTok)',week:'W1',dateStart:'01/05/2025',dateEnd:'07/05/2025',filename:'',status:'Aired',adChannel:'Facebook'}
   ]
 };
 
@@ -679,7 +706,8 @@ function parseSheet(csv){
     reach:      col('reach'),
     click:      col('clickomni')>=0 ? col('clickomni') : col('click'),
     adFilename: col('adfilename')>=0 ? col('adfilename') : (col('filename')>=0?col('filename'):col('adimage')),
-    adStatus:   col('adstatus')>=0  ? col('adstatus')   : col('status')
+    adStatus:   col('adstatus')>=0  ? col('adstatus')   : col('status'),
+    adChannel:  col('adchannel')>=0 ? col('adchannel') : (col('adformat')>=0?col('adformat'):col('platform'))
   };
 
   if(ix.budget<0||ix.stake<0){
@@ -712,8 +740,9 @@ function parseSheet(csv){
     var wk = ix.week>=0   ? (r[ix.week]||'').replace(/"/g,'').trim()   : '';
     var ds = ix.dateStart>=0 ? (r[ix.dateStart]||'').replace(/"/g,'').trim() : '';
     var de = ix.dateEnd>=0   ? (r[ix.dateEnd]||'').replace(/"/g,'').trim()   : '';
-    var af = ix.adFilename>=0? (r[ix.adFilename]||'').replace(/"/g,'').trim(): '';
+    var af  = ix.adFilename>=0? (r[ix.adFilename]||'').replace(/"/g,'').trim(): '';
     var as_ = ix.adStatus>=0 ? (r[ix.adStatus]||'').replace(/"/g,'').trim()  : '';
+    var ach = ix.adChannel>=0? (r[ix.adChannel]||'').replace(/"/g,'').trim()  : '';
     if(!sk||b===0) continue;
     if(ix.month>=0&&r[ix.month]) mo=r[ix.month].replace(/"/g,'').trim();
     if(ds) allDates.push(ds);
@@ -738,7 +767,8 @@ function parseSheet(csv){
     adsList.push({
       campaign: sk, brand: br||'-', channel: ch, week: wk,
       dateStart: ds, dateEnd: de, filename: af,
-      status: as_||'Planned'
+      status: as_||'Planned',
+      adChannel: ach  // specific platform: Facebook|TikTok|Google|Zalo
     });
   }
 
@@ -793,9 +823,11 @@ function changeView(v, btn){
   btn.classList.add('active');
   // Sync gallery filter with view
   var fMap = {all:'all', brands:'nhan', branches:'chinhanh'};
-  galleryFilter = fMap[v] || 'all';
+  galleryFilter    = fMap[v] || 'all';
   gallerySubFilter = '';
+  galleryChFilter  = 'all';
   syncGFilterButtons(galleryFilter);
+  syncGChButtons('all');
   render();
 }
 
@@ -887,7 +919,9 @@ function syncGFilterButtons(f){
 function setGFilter(btn, f){
   galleryFilter    = f;
   gallerySubFilter = '';
+  galleryChFilter  = 'all';
   syncGFilterButtons(f);
+  syncGChButtons('all');
   renderGallery();
 }
 
@@ -896,6 +930,18 @@ function setGSubFilter(val){
   document.querySelectorAll('.g-chip').forEach(function(c){
     c.classList.toggle('active', c.getAttribute('data-v')===gallerySubFilter);
   });
+  renderGallery();
+}
+
+function syncGChButtons(f){
+  document.querySelectorAll('#galleryChFilters .g-ch-btn').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-ch')===f);
+  });
+}
+
+function setGChFilter(btn, f){
+  galleryChFilter = f;
+  syncGChButtons(f);
   renderGallery();
 }
 
@@ -920,6 +966,23 @@ function getSubFilterOptions(){
   return [];
 }
 
+/* Map ad → specific platform badge  */
+function getChBadge(ad){
+  var ac = (ad.adChannel||'').trim().toLowerCase();
+  var ch = (ad.channel||'').toLowerCase();
+  // Priority: explicit Ad_Channel field
+  if(ac==='facebook'||ac==='fb')             return {cls:'fb',     txt:'Facebook', key:'facebook'};
+  if(ac==='tiktok'||ac==='tik tok')           return {cls:'tiktok', txt:'TikTok',   key:'tiktok'};
+  if(ac==='google'||ac.indexOf('google')>=0)  return {cls:'google', txt:'Google',   key:'google'};
+  if(ac==='zalo')                             return {cls:'zalo',   txt:'Zalo',     key:'zalo'};
+  if(ac==='youtube'||ac==='yt')               return {cls:'yt',     txt:'YouTube',  key:'yt'};
+  // Fallback: derive from Channel budget column
+  if(ch.indexOf('tiktok')>=0)                 return {cls:'tiktok', txt:'TikTok',   key:'tiktok'};
+  if(ch.indexOf('google')>=0)                 return {cls:'google', txt:'Google',   key:'google'};
+  if(ch.indexOf('zalo')>=0)                   return {cls:'zalo',   txt:'Zalo',     key:'zalo'};
+  return {cls:'fb', txt:'Facebook', key:'facebook'};  // default social = Facebook
+}
+
 function renderGallery(){
   var subEl = document.getElementById('gallerySub');
   var subs  = getSubFilterOptions();
@@ -932,11 +995,16 @@ function renderGallery(){
     subEl.innerHTML='';
   }
 
-  // Filter ads
+  // Filter ads — campaign, brand/branch, and platform (adChannel)
   var filtered = DATA.ads.filter(function(a){
     var cf = campToGFilter(a.campaign);
     if(galleryFilter!=='all' && cf!==galleryFilter) return false;
     if(gallerySubFilter && a.brand!==gallerySubFilter) return false;
+    // Platform filter: match adChannel field (case-insensitive)
+    if(galleryChFilter!=='all'){
+      var ach = getChBadge(a).key;
+      if(ach !== galleryChFilter) return false;
+    }
     return true;
   });
 
@@ -952,9 +1020,9 @@ function renderGallery(){
     var adUrl     = getAdUrl(ad.filename);
     var statusCls = (ad.status||'').toLowerCase()==='aired'?'aired':'planned';
     var statusTxt = statusCls==='aired'?'AIRED':'PLANNED';
-    var chLower   = (ad.channel||'').toLowerCase();
-    var chCls     = chLower.indexOf('google')>=0?'google':chLower.indexOf('tiktok')>=0?'tiktok':'social';
-    var chShort   = chLower.indexOf('google')>=0?'Google':chLower.indexOf('tiktok')>=0?'TikTok':'Social';
+    var _chb    = getChBadge(ad);
+    var chCls   = _chb.cls;
+    var chShort = _chb.txt;
     var brand     = ad.brand!=='-'?ad.brand:ad.campaign;
     var week      = ad.week?' · '+ad.week:'';
 
@@ -1003,9 +1071,10 @@ function openModal(idx){
 
   document.getElementById('modalBrand').textContent = brand;
 
+  var _mb   = getChBadge(ad);
   var tags = [
     {cls:'camp', txt:ad.campaign},
-    {cls:'ch',   txt:ad.channel||'—'},
+    {cls:'ch',   txt:_mb.txt+(ad.channel&&ad.channel!==_mb.txt?' ('+ad.channel+')':'')},
     ad.week ? {cls:'week',txt:ad.week} : null,
     ad.dateStart && ad.dateEnd ? {cls:'date',txt:ad.dateStart+' – '+ad.dateEnd} : null
   ].filter(Boolean);
