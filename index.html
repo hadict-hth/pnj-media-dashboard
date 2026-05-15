@@ -482,7 +482,31 @@ var DEFAULT = {
   ]
 };
 
-var DATA = JSON.parse(JSON.stringify(DEFAULT));
+/* ═══ PERSISTENCE — localStorage keeps data/images across F5 ═══
+   Key: pnj_dashboard_data · Cleared only when user clicks Reset
+═══════════════════════════════════════════════ */
+var _STORE_KEY = 'pnj_dashboard_data';
+
+function _saveData(){
+  DATA._savedAt = new Date().toISOString();
+  try{ localStorage.setItem(_STORE_KEY, JSON.stringify(DATA)); }catch(e){}
+}
+function _clearSaved(){
+  try{ localStorage.removeItem(_STORE_KEY); }catch(e){}
+}
+
+// On page load: restore from localStorage if available, else use DEFAULT
+var DATA = (function(){
+  try{
+    var raw = localStorage.getItem(_STORE_KEY);
+    if(raw){
+      var parsed = JSON.parse(raw);
+      if(parsed && parsed.total && parsed.stakes && Array.isArray(parsed.stakes))
+        return parsed;
+    }
+  }catch(e){}
+  return JSON.parse(JSON.stringify(DEFAULT));
+})();
 
 /* ═══════════════════════════════════════════════
    SETTINGS HELPERS
@@ -573,6 +597,7 @@ function campToGFilter(camp){
    RESET & LOAD
 ═══════════════════════════════════════════════ */
 function resetData(){
+  _clearSaved();
   DATA = JSON.parse(JSON.stringify(DEFAULT));
   document.getElementById('hTitle').textContent = 'Master Media Allocation Plan — T5/2025';
   document.getElementById('hBadge').textContent = 'APPROVED TEMPLATE';
@@ -582,7 +607,7 @@ function resetData(){
   galleryFilter = 'all'; gallerySubFilter = '';
   syncGFilterButtons('all');
   render();
-  setStatus('Đã khôi phục dữ liệu Template T5/2025', '#4B5563');
+  setStatus('Đã xóa dữ liệu đã lưu · Đang hiển thị Template T5/2025', '#4B5563');
 }
 
 function loadPasted(){
@@ -752,10 +777,11 @@ function parseSheet(csv){
   galleryFilter='all'; gallerySubFilter='';
   syncGFilterButtons('all');
   render();
+  // Save to localStorage — data survives F5
+  _saveData();
   var rowsLoaded=Object.values(sMap).reduce(function(s,v){return s+1+Object.keys(v.kids).length;},0);
   setStatus('✓ Sync thành công lúc '+new Date().toLocaleTimeString('vi-VN')+
-            ' · Header dòng '+(headerIdx+1)+
-            ' · '+rowsLoaded+' dòng · '+adsList.length+' ads','#059669');
+            ' · '+rowsLoaded+' dòng · '+adsList.length+' ads · ☁️ Đã lưu, F5 vẫn giữ nguyên','#059669');
 }
 
 /* ═══════════════════════════════════════════════
@@ -1116,6 +1142,25 @@ function render(){
   renderTable();
 }
 
+/* Restore header UI state when DATA came from localStorage */
+function _restoreHeaderFromSaved(){
+  if(!DATA._savedAt) return;  // not from storage — skip
+  var ts = new Date(DATA._savedAt).toLocaleString('vi-VN');
+  document.getElementById('hTitle').textContent = 'Master Media Allocation Plan — ' + DATA.month;
+  document.getElementById('hBadge').textContent = 'LIVE DATA: ' + DATA.month;
+  document.getElementById('gSyncBadge').style.display = '';
+  if(DATA.dateStart && DATA.dateEnd){
+    document.getElementById('hDateRange').style.display = 'flex';
+    document.getElementById('hDateText').textContent = DATA.dateStart + ' – ' + DATA.dateEnd;
+  }
+  if(DATA.weeks && DATA.weeks.length){
+    document.getElementById('hWeekInfo').style.display = '';
+    document.getElementById('hWeekInfo').textContent = DATA.weeks.slice().sort().join(' · ');
+  }
+  setStatus('✓ Khôi phục dữ liệu lần sync: ' + ts + ' · Bấm Reset để xóa', '#059669');
+}
+
+_restoreHeaderFromSaved();
 render();
 </script>
 </body>
