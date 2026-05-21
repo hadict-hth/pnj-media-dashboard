@@ -348,10 +348,12 @@ tr.total-row td{padding:12px;background:#F3F4F6;font-weight:700;font-size:12px;c
         <input class="gs-input" id="locSheetUrl" placeholder="Link CSV Google Sheet cho dữ liệu tỉnh/thành phố...">
         <button class="btn btn-navy" onclick="loadLocationSheet()">Sync Location</button>
         <button class="btn btn-ghost" onclick="resetLocationData()">Reset Location</button>
+        <button class="btn btn-green" onclick="exportDashboardWithCurrentLocationData()">Xuất HTML mới</button>
       </div>
       <div class="gs-hint">
         <strong>Schema:</strong> <code>Province</code>, <code>Latitude</code>, <code>Longitude</code>, <code>Digital_Coverage</code>, <code>Click_to_Omni</code>
-        — <button class="btn btn-amber" style="display:inline;padding:2px 8px;font-size:10px;border-radius:4px;" onclick="downloadLocationTemplate()">⬇ Tải Location Template</button>
+        — <button class="btn btn-amber" style="display:inline;padding:2px 8px;font-size:10px;border-radius:4px;" onclick="downloadLocationTemplate()">⬇ Tải Location Template</button><br>
+        <strong>Lưu ý:</strong> Sync chỉ lưu trên browser hiện tại. Bấm <code>Xuất HTML mới</code> để nhúng dữ liệu location hiện tại thành data mặc định cho thiết bị/browser khác.
       </div>
     </div>
 
@@ -366,6 +368,7 @@ tr.total-row td{padding:12px;background:#F3F4F6;font-weight:700;font-size:12px;c
         <button class="btn btn-navy" onclick="loadLocationPasted()">Parse & Load Location</button>
         <button class="btn btn-ghost" onclick="resetLocationData()">Reset Location</button>
         <button class="btn btn-amber" onclick="downloadLocationTemplate()">⬇ Template</button>
+        <button class="btn btn-green" onclick="exportDashboardWithCurrentLocationData()">Xuất HTML mới</button>
       </div>
     </div>
     <!-- Pane 3: GitHub Config -->
@@ -2203,6 +2206,44 @@ function downloadLocationCSV(){
   var a = document.createElement('a');
   a.href = url; a.download = 'PNJ_Location_Performance.csv';
   a.click(); URL.revokeObjectURL(url);
+}
+
+function exportDashboardWithCurrentLocationData(){
+  var rows = locRows();
+  if(!rows.length){
+    setStatus('Lỗi: Chưa có Location Data để nhúng vào HTML.','#DC2626');
+    return;
+  }
+
+  var cleanRows = rows.map(function(d){
+    return {
+      region: String(d.region || '').trim(),
+      lat: d.lat==null || d.lat==='' ? null : Number(d.lat),
+      lng: d.lng==null || d.lng==='' ? null : Number(d.lng),
+      digitalCoverage: Number(d.digitalCoverage) || 0,
+      clickToOmni: Number(d.clickToOmni) || 0
+    };
+  }).filter(function(d){ return d.region; });
+
+  var source = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+  var replacement = 'var LOCATION_DEFAULT_ROWS = ' + JSON.stringify(cleanRows, null, 2) + ';\nvar LOCATION_STORE_KEY';
+  var updated = source.replace(/var LOCATION_DEFAULT_ROWS = [\s\S]*?;\nvar LOCATION_STORE_KEY/, replacement);
+
+  if(updated === source){
+    setStatus('Lỗi: Không tìm được block LOCATION_DEFAULT_ROWS để cập nhật HTML.','#DC2626');
+    return;
+  }
+
+  var blob = new Blob(['\uFEFF' + updated], {type:'text/html;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  var stamp = new Date().toISOString().slice(0,10).replace(/-/g,'');
+  a.href = url;
+  a.download = 'pnj-media-dashboard-location-base-' + stamp + '.html';
+  a.click();
+  URL.revokeObjectURL(url);
+
+  setStatus('✓ Đã xuất HTML mới với '+cleanRows.length+' dòng Location Data làm mặc định. Dùng file này để mở trên thiết bị/browser khác.','#059669');
 }
 
 function render(){
