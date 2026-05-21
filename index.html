@@ -609,10 +609,19 @@ tr.total-row td{padding:12px;background:#F3F4F6;font-weight:700;font-size:12px;c
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 /* ═══════════════════════════════════════════════
+   FIXED LIVE SOURCES
+═══════════════════════════════════════════════ */
+var MASTER_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTGyhOIKurWj3XS2q5iUqaQkS8q5xUqOx882qiF27mxP4RQPyeE0B7tzoOgNFzaJJVufRe0Nqztvj8A/pub?gid=1183103372&single=true&output=csv';
+var LOCATION_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTGyhOIKurWj3XS2q5iUqaQkS8q5xUqOx882qiF27mxP4RQPyeE0B7tzoOgNFzaJJVufRe0Nqztvj8A/pub?gid=553546995&single=true&output=csv';
+var DEFAULT_GH_BASE = 'https://raw.githubusercontent.com/hadict-hth/pnj-media-dashboard/main/ads/2025-05/';
+
+/* ═══════════════════════════════════════════════
    STATE
 ═══════════════════════════════════════════════ */
-var ghBase = localStorage.getItem('pnj_gh_base') || '';
-if(ghBase) document.getElementById('ghBaseInput').value = ghBase;
+var ghBase = localStorage.getItem('pnj_gh_base') || DEFAULT_GH_BASE;
+document.getElementById('sheetUrl').value = MASTER_SHEET_CSV_URL;
+document.getElementById('locSheetUrl').value = LOCATION_SHEET_CSV_URL;
+document.getElementById('ghBaseInput').value = ghBase;
 
 var galleryFilter    = 'all';
 var gallerySubFilter = '';
@@ -820,18 +829,22 @@ function loadSheet(){
   var url = document.getElementById('sheetUrl').value.trim();
   if(!url){ setStatus('Lỗi: Vui lòng dán link CSV.','#DC2626'); return; }
   setStatus('⏳ Đang kết nối...','#C8973A');
+  syncMasterSheetFromUrl(url);
+}
+
+function syncMasterSheetFromUrl(url, silent){
   fetch(url)
     .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); })
     .then(function(csv){ if(!csv||csv.trim().length<30) throw new Error('Empty'); parseSheet(csv); })
     .catch(function(){
       var proxy = 'https://corsproxy.io/?'+encodeURIComponent(url);
-      setStatus('⏳ Thử qua CORS proxy...','#C8973A');
+      if(!silent) setStatus('⏳ Thử qua CORS proxy...','#C8973A');
       fetch(proxy)
         .then(function(r){ return r.text(); })
         .then(function(csv){ if(!csv||csv.trim().length<30) throw new Error('Empty via proxy'); parseSheet(csv); })
         .catch(function(){
-          setStatus('❌ Không kết nối được. Dùng tab "Dán CSV".','#D97706');
-          switchTab('paste');
+          setStatus(silent ? '⚠ Không auto-sync được Master CSV. Đang dùng dữ liệu đã lưu/default.' : '❌ Không kết nối được. Dùng tab "Dán CSV".','#D97706');
+          if(!silent) switchTab('paste');
         });
     });
 }
@@ -2153,18 +2166,22 @@ function loadLocationSheet(){
   var url = document.getElementById('locSheetUrl').value.trim();
   if(!url){ setStatus('Lỗi: Vui lòng dán link Location CSV.','#DC2626'); return; }
   setStatus('⏳ Đang kết nối Location CSV...','#C8973A');
+  syncLocationSheetFromUrl(url);
+}
+
+function syncLocationSheetFromUrl(url, silent){
   fetch(url)
     .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); })
     .then(function(csv){ var rows = parseLocationSheet(csv); saveLocationRows(rows); setStatus('✓ Sync location thành công · '+rows.length+' tỉnh/thành · Đã lưu, F5 vẫn giữ nguyên','#059669'); })
     .catch(function(){
       var proxy = 'https://corsproxy.io/?'+encodeURIComponent(url);
-      setStatus('⏳ Thử Location qua CORS proxy...','#C8973A');
+      if(!silent) setStatus('⏳ Thử Location qua CORS proxy...','#C8973A');
       fetch(proxy)
         .then(function(r){ return r.text(); })
         .then(function(csv){ var rows = parseLocationSheet(csv); saveLocationRows(rows); setStatus('✓ Sync location thành công · '+rows.length+' tỉnh/thành · Đã lưu, F5 vẫn giữ nguyên','#059669'); })
         .catch(function(e){
-          setStatus('❌ Không kết nối/parse được Location CSV. Dữ liệu đã lưu không bị thay đổi. '+(e&&e.message?e.message:''),'#D97706');
-          switchTab('loc-paste');
+          setStatus(silent ? '⚠ Không auto-sync được Location CSV. Đang dùng dữ liệu đã lưu/default.' : '❌ Không kết nối/parse được Location CSV. Dữ liệu đã lưu không bị thay đổi. '+(e&&e.message?e.message:''),'#D97706');
+          if(!silent) switchTab('loc-paste');
         });
     });
 }
@@ -2246,6 +2263,17 @@ function exportDashboardWithCurrentLocationData(){
   setStatus('✓ Đã xuất HTML mới với '+cleanRows.length+' dòng Location Data làm mặc định. Dùng file này để mở trên thiết bị/browser khác.','#059669');
 }
 
+function autoSyncFixedSources(){
+  ghBase = DEFAULT_GH_BASE;
+  document.getElementById('ghBaseInput').value = ghBase;
+  localStorage.setItem('pnj_gh_base', ghBase);
+  document.getElementById('sheetUrl').value = MASTER_SHEET_CSV_URL;
+  document.getElementById('locSheetUrl').value = LOCATION_SHEET_CSV_URL;
+  setStatus('⏳ Đang auto-sync dữ liệu từ Google Sheet cố định...','#C8973A');
+  syncMasterSheetFromUrl(MASTER_SHEET_CSV_URL, true);
+  syncLocationSheetFromUrl(LOCATION_SHEET_CSV_URL, true);
+}
+
 function render(){
   renderKPIs();
   renderChart();
@@ -2273,6 +2301,7 @@ function _restoreHeaderFromSaved(){
 
 _restoreHeaderFromSaved();
 render();
+autoSyncFixedSources();
 </script>
 </body>
 </html>
