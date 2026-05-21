@@ -230,7 +230,64 @@ tr.total-row td{padding:12px;background:#F3F4F6;font-weight:700;font-size:12px;c
 
 /* ── Responsive tweaks ── */
 @media(max-width:420px){.gallery-grid{grid-template-columns:repeat(2,1fr);}}
+
+
+/* Location performance tab */
+.content-section{display:block;}
+.location-content{display:none;flex-direction:column;gap:14px;}
+.loc-kpi-row{display:grid;grid-template-columns:1fr;gap:12px;}
+@media(min-width:600px){.loc-kpi-row{grid-template-columns:repeat(2,1fr);}}
+.loc-main-grid{display:grid;grid-template-columns:1fr;gap:14px;}
+@media(min-width:900px){.loc-main-grid{grid-template-columns:1fr 320px;}}
+.loc-panel{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,.03);overflow:hidden;}
+.loc-panel-header{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;background:#FAFAFA;}
+.loc-panel-title{font-size:11px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:1px;}
+.loc-toolbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.loc-metric-btn{padding:6px 11px;border:1px solid var(--border);border-radius:7px;background:#fff;color:#4B5563;font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.loc-metric-btn.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+.loc-reset-btn{padding:6px 11px;border:1px solid var(--border);border-radius:7px;background:#F3F4F6;color:#374151;font-size:11px;font-weight:700;cursor:pointer;}
+#locMap{height:460px;width:100%;background:#EEF2F7;}
+.loc-map-legend{padding:8px 14px;background:#F8FAFC;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;font-size:10px;color:#6B7280;flex-wrap:wrap;}
+.loc-bubble-dot{background:rgba(16,185,129,.38);border:2px solid #10B981;border-radius:50%;display:inline-block;}
+.loc-top-list{padding:6px 0;max-height:504px;overflow-y:auto;}
+.loc-top-item{display:flex;align-items:center;gap:8px;padding:8px 14px;cursor:pointer;border-left:3px solid transparent;}
+.loc-top-item:hover{background:#F8FAFC;}
+.loc-top-item.highlight{background:#EFF6FF;border-left-color:var(--blue);}
+.loc-rank{width:21px;height:21px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;background:#F1F5F9;color:#64748B;}
+.loc-rank.r1{background:#FEF3C7;color:#D97706;}
+.loc-rank.r2{background:#E5E7EB;color:#4B5563;}
+.loc-rank.r3{background:#FEE2E2;color:#B45309;}
+.loc-top-name{flex:1;font-size:11px;font-weight:700;color:#1A2E4A;}
+.loc-top-bar-wrap{width:68px;}
+.loc-top-bar-bg{height:4px;background:#F1F5F9;border-radius:2px;overflow:hidden;}
+.loc-top-bar-fill{height:4px;border-radius:2px;transition:width .25s;}
+.loc-top-val{font-size:10px;font-weight:800;min-width:54px;text-align:right;font-family:'DM Mono',monospace;}
+.loc-table-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.loc-search{padding:7px 11px;border:1px solid #D1D5DB;border-radius:7px;font-size:12px;outline:none;width:190px;}
+.loc-search:focus{border-color:var(--navy);box-shadow:0 0 0 2px rgba(26,46,74,.1);}
+.loc-table table{min-width:620px;}
+.loc-table th{cursor:pointer;user-select:none;}
+.loc-table td{padding:9px 12px;border-bottom:1px solid #F3F4F6;font-size:11px;}
+.loc-region{font-weight:700;color:#1A2E4A;}
+.loc-num{text-align:right;font-family:'DM Mono',monospace;font-weight:700;}
+.loc-pagination{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid var(--border);font-size:11px;color:#6B7280;gap:8px;flex-wrap:wrap;}
+.loc-page-btns{display:flex;gap:4px;align-items:center;}
+.loc-page-btn{padding:4px 9px;border:1px solid var(--border);border-radius:5px;background:#fff;font-size:11px;cursor:pointer;color:#374151;}
+.loc-page-btn.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+.loc-page-btn:disabled{opacity:.45;cursor:not-allowed;}
+.leaflet-tooltip-custom{background:#1A2E4A;color:#fff;border:none;border-radius:9px;padding:10px 14px;font-family:'DM Sans',system-ui,sans-serif;box-shadow:0 4px 20px rgba(0,0,0,.25);min-width:190px;}
+.leaflet-tooltip-custom::before{display:none;}
+.loc-tt-region{font-size:13px;font-weight:800;color:var(--gold);margin-bottom:8px;border-bottom:1px solid rgba(255,255,255,.14);padding-bottom:6px;}
+.loc-tt-row{display:flex;justify-content:space-between;gap:18px;font-size:11px;margin:3px 0;}
+.loc-tt-label{color:#CBD5E1;}
+.loc-tt-val{font-weight:800;color:#fff;font-family:'DM Mono',monospace;}
+@media(max-width:640px){
+  #locMap{height:320px;}
+  .loc-search{width:100%;flex:1;}
+  .loc-top-list{max-height:280px;}
+}
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 </head>
 <body>
 <div class="wrap">
@@ -251,6 +308,8 @@ tr.total-row td{padding:12px;background:#F3F4F6;font-weight:700;font-size:12px;c
       <button class="mode-tab active" id="tab-url"   onclick="switchTab('url')">🔗 Link CSV</button>
       <button class="mode-tab"        id="tab-paste" onclick="switchTab('paste')">📋 Dán CSV</button>
       <button class="mode-tab"        id="tab-gh"    onclick="switchTab('gh')">📁 GitHub Ads</button>
+      <button class="mode-tab"        id="tab-loc-url" onclick="switchTab('loc-url')">🗺️ Link Location</button>
+      <button class="mode-tab"        id="tab-loc-paste" onclick="switchTab('loc-paste')">📍 Dán Location</button>
     </div>
 
     <!-- Pane 1: URL -->
@@ -280,6 +339,35 @@ tr.total-row td{padding:12px;background:#F3F4F6;font-weight:700;font-size:12px;c
       </div>
     </div>
 
+
+
+    <!-- Pane 4: Location URL -->
+    <div class="mode-pane" id="pane-loc-url">
+      <div class="gs-section-label">Location Data</div>
+      <div class="gs-row">
+        <input class="gs-input" id="locSheetUrl" placeholder="Link CSV Google Sheet cho dữ liệu tỉnh/thành phố...">
+        <button class="btn btn-navy" onclick="loadLocationSheet()">Sync Location</button>
+        <button class="btn btn-ghost" onclick="resetLocationData()">Reset Location</button>
+      </div>
+      <div class="gs-hint">
+        <strong>Schema:</strong> <code>Province</code>, <code>Latitude</code>, <code>Longitude</code>, <code>Digital_Coverage</code>, <code>Click_to_Omni</code>
+        — <button class="btn btn-amber" style="display:inline;padding:2px 8px;font-size:10px;border-radius:4px;" onclick="downloadLocationTemplate()">⬇ Tải Location Template</button>
+      </div>
+    </div>
+
+    <!-- Pane 5: Location Paste -->
+    <div class="mode-pane" id="pane-loc-paste">
+      <div class="gs-section-label">Location Data</div>
+      <div class="csv-hint">
+        Dán CSV theo schema: <strong>Province, Latitude, Longitude, Digital_Coverage, Click_to_Omni</strong>
+      </div>
+      <textarea class="csv-textarea" id="locCsvPaste" placeholder="Province,Latitude,Longitude,Digital_Coverage,Click_to_Omni&#10;TP. Hồ Chí Minh,10.7769,106.7009,72216,1717"></textarea>
+      <div class="gs-row" style="margin-top:8px;">
+        <button class="btn btn-navy" onclick="loadLocationPasted()">Parse & Load Location</button>
+        <button class="btn btn-ghost" onclick="resetLocationData()">Reset Location</button>
+        <button class="btn btn-amber" onclick="downloadLocationTemplate()">⬇ Template</button>
+      </div>
+    </div>
     <!-- Pane 3: GitHub Config -->
     <div class="mode-pane" id="pane-gh">
       <div class="csv-hint">
@@ -319,6 +407,16 @@ tr.total-row td{padding:12px;background:#F3F4F6;font-weight:700;font-size:12px;c
   </div>
 </div>
 
+<!-- ═══ VIEW TABS ═══ -->
+<div class="view-tabs">
+  <button class="view-btn active" onclick="changeView('all',this)">Master Plan</button>
+  <button class="view-btn" onclick="changeView('brands',this)">Nhãn Hàng</button>
+  <button class="view-btn" onclick="changeView('branches',this)">Chi Nhánh</button>
+  <button class="view-btn" onclick="changeView('location',this)">Hiệu quả truyền thông theo tỉnh/thành phố</button>
+</div>
+
+<div id="masterContent" class="content-section">
+
 <!-- ═══ KPI CARDS ═══ -->
 <div class="kpi-row">
   <div class="kpi-card navy">
@@ -338,12 +436,7 @@ tr.total-row td{padding:12px;background:#F3F4F6;font-weight:700;font-size:12px;c
   </div>
 </div>
 
-<!-- ═══ VIEW TABS ═══ -->
-<div class="view-tabs">
-  <button class="view-btn active" onclick="changeView('all',this)">Master Plan</button>
-  <button class="view-btn" onclick="changeView('brands',this)">Nhãn Hàng</button>
-  <button class="view-btn" onclick="changeView('branches',this)">Chi Nhánh</button>
-</div>
+
 
 <!-- ═══ CHARTS ROW ═══ -->
 <div class="charts-row">
@@ -412,6 +505,81 @@ tr.total-row td{padding:12px;background:#F3F4F6;font-weight:700;font-size:12px;c
   </div>
 </div>
 
+
+</div><!-- /masterContent -->
+
+<!-- ═══ LOCATION PERFORMANCE TAB ═══ -->
+<div id="locationContent" class="content-section location-content">
+  <div class="loc-kpi-row">
+    <div class="kpi-card green">
+      <div class="kpi-lbl">Tổng Digital Coverage</div>
+      <div class="kpi-val" id="locKpiCoverage">0</div>
+      <div class="kpi-sub" id="locKpiCoverageS">0 lượt tiếp cận</div>
+    </div>
+    <div class="kpi-card gold">
+      <div class="kpi-lbl">Tổng Click to Omni</div>
+      <div class="kpi-val" id="locKpiClick">0</div>
+      <div class="kpi-sub" id="locKpiClickS">0 clicks</div>
+    </div>
+  </div>
+
+  <div class="loc-main-grid">
+    <div class="loc-panel">
+      <div class="loc-panel-header">
+        <span class="loc-panel-title">Bản đồ Việt Nam — hiệu quả theo tỉnh/thành phố</span>
+        <div class="loc-toolbar">
+          <button class="loc-metric-btn active" id="locMetric-digitalCoverage" onclick="setLocationMetric('digitalCoverage')">Digital Coverage</button>
+          <button class="loc-metric-btn" id="locMetric-clickToOmni" onclick="setLocationMetric('clickToOmni')">Click to Omni</button>
+          <button class="loc-reset-btn" onclick="resetLocationFilter()">↺ Reset</button>
+        </div>
+      </div>
+      <div id="locMap"></div>
+      <div class="loc-map-legend">
+        <span><span class="loc-bubble-dot" style="width:7px;height:7px;"></span> Nhỏ</span>
+        <span><span class="loc-bubble-dot" style="width:15px;height:15px;"></span> Vừa</span>
+        <span><span class="loc-bubble-dot" style="width:24px;height:24px;"></span> Lớn</span>
+        <span>· Hover xem chi tiết · Click để focus</span>
+        <span style="margin-left:auto;">Metric: <strong id="locLegendMetric">Digital Coverage</strong></span>
+      </div>
+    </div>
+
+    <div class="loc-panel">
+      <div class="loc-panel-header">
+        <span class="loc-panel-title">Top 10 tỉnh/thành</span>
+        <span style="font-size:10px;color:#9CA3AF;margin-left:auto;" id="locTopLabel">Theo Digital Coverage</span>
+      </div>
+      <div class="loc-top-list" id="locTopList"></div>
+    </div>
+  </div>
+
+  <div class="loc-panel loc-table">
+    <div class="loc-panel-header">
+      <span class="loc-panel-title">Chi tiết theo tỉnh/thành phố</span>
+      <div class="loc-table-tools">
+        <input class="loc-search" id="locSearchInput" placeholder="Tìm tỉnh/thành..." oninput="filterLocationTable()">
+        <button class="btn btn-navy" onclick="downloadLocationCSV()">⬇ CSV</button>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="l" id="locTh-region" onclick="sortLocationTable('region')"># Tỉnh / Thành phố <span class="si"></span></th>
+            <th class="r th-reach" id="locTh-digitalCoverage" onclick="sortLocationTable('digitalCoverage')">Digital Coverage <span class="si">↓</span></th>
+            <th class="r th-click" id="locTh-clickToOmni" onclick="sortLocationTable('clickToOmni')">Click to Omni <span class="si"></span></th>
+          </tr>
+        </thead>
+        <tbody id="locTableBody"></tbody>
+      </table>
+    </div>
+    <div class="loc-pagination">
+      <span id="locPaginationInfo"></span>
+      <div class="loc-page-btns" id="locPageBtns"></div>
+    </div>
+  </div>
+</div>
+
+
 </div><!-- /wrap -->
 
 <!-- ═══ AD MODAL ═══ -->
@@ -434,6 +602,7 @@ tr.total-row td{padding:12px;background:#F3F4F6;font-weight:700;font-size:12px;c
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 /* ═══════════════════════════════════════════════
@@ -543,7 +712,7 @@ function toggleGS(){
   document.getElementById('gsBody').classList.toggle('open');
 }
 function switchTab(t){
-  ['url','paste','gh'].forEach(function(id){
+  ['url','paste','gh','loc-url','loc-paste'].forEach(function(id){
     document.getElementById('tab-'+id).classList.toggle('active', id===t);
     document.getElementById('pane-'+id).classList.toggle('active', id===t);
   });
@@ -821,6 +990,15 @@ function changeView(v, btn){
   currentView = v;
   document.querySelectorAll('.view-btn').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
+  if(v==='location'){
+    document.getElementById('masterContent').style.display = 'none';
+    document.getElementById('locationContent').style.display = 'flex';
+    initLocationMap();
+    renderLocation();
+    return;
+  }
+  document.getElementById('masterContent').style.display = 'block';
+  document.getElementById('locationContent').style.display = 'none';
   // Sync gallery filter with view
   var fMap = {all:'all', brands:'nhan', branches:'chinhanh'};
   galleryFilter    = fMap[v] || 'all';
@@ -1204,6 +1382,829 @@ function toggleKidRow(kidId){
 /* ═══════════════════════════════════════════════
    MASTER RENDER
 ═══════════════════════════════════════════════ */
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   LOCATION PERFORMANCE TAB
+═══════════════════════════════════════════════════════════════════════ */
+var LOCATION_DEFAULT_ROWS = [
+  {
+    "region": "TP. Hồ Chí Minh",
+    "lat": 10.7769,
+    "lng": 106.7009,
+    "digitalCoverage": 72216,
+    "clickToOmni": 1717
+  },
+  {
+    "region": "Hà Nội",
+    "lat": 21.0285,
+    "lng": 105.8542,
+    "digitalCoverage": 34495,
+    "clickToOmni": 777
+  },
+  {
+    "region": "Bình Dương",
+    "lat": 10.9804,
+    "lng": 106.6519,
+    "digitalCoverage": 5742,
+    "clickToOmni": 118
+  },
+  {
+    "region": "Đà Nẵng",
+    "lat": 16.0544,
+    "lng": 108.2022,
+    "digitalCoverage": 6679,
+    "clickToOmni": 115
+  },
+  {
+    "region": "Cần Thơ",
+    "lat": 10.0452,
+    "lng": 105.7469,
+    "digitalCoverage": 4002,
+    "clickToOmni": 80
+  },
+  {
+    "region": "Hải Phòng",
+    "lat": 20.8449,
+    "lng": 106.6881,
+    "digitalCoverage": 3303,
+    "clickToOmni": 69
+  },
+  {
+    "region": "Đồng Nai",
+    "lat": 10.9453,
+    "lng": 106.824,
+    "digitalCoverage": 4008,
+    "clickToOmni": 60
+  },
+  {
+    "region": "Đắk Lắk",
+    "lat": 12.71,
+    "lng": 108.2378,
+    "digitalCoverage": 1913,
+    "clickToOmni": 45
+  },
+  {
+    "region": "Thừa Thiên Huế",
+    "lat": 16.4637,
+    "lng": 107.5909,
+    "digitalCoverage": 2184,
+    "clickToOmni": 43
+  },
+  {
+    "region": "Khánh Hòa",
+    "lat": 12.2388,
+    "lng": 109.1967,
+    "digitalCoverage": 2120,
+    "clickToOmni": 35
+  },
+  {
+    "region": "Nghệ An",
+    "lat": 18.6796,
+    "lng": 105.6813,
+    "digitalCoverage": 1397,
+    "clickToOmni": 33
+  },
+  {
+    "region": "Bà Rịa - Vũng Tàu",
+    "lat": 10.5417,
+    "lng": 107.243,
+    "digitalCoverage": 1933,
+    "clickToOmni": 29
+  },
+  {
+    "region": "Lâm Đồng",
+    "lat": 11.5753,
+    "lng": 108.1429,
+    "digitalCoverage": 1247,
+    "clickToOmni": 27
+  },
+  {
+    "region": "Bắc Ninh",
+    "lat": 21.1861,
+    "lng": 106.0763,
+    "digitalCoverage": 1372,
+    "clickToOmni": 25
+  },
+  {
+    "region": "Long An",
+    "lat": 10.6956,
+    "lng": 106.2431,
+    "digitalCoverage": 1437,
+    "clickToOmni": 23
+  },
+  {
+    "region": "Thanh Hóa",
+    "lat": 19.8074,
+    "lng": 105.7766,
+    "digitalCoverage": 1214,
+    "clickToOmni": 19
+  },
+  {
+    "region": "Bình Thuận",
+    "lat": 10.9333,
+    "lng": 108.1,
+    "digitalCoverage": 919,
+    "clickToOmni": 16
+  },
+  {
+    "region": "Thái Bình",
+    "lat": 20.4463,
+    "lng": 106.3366,
+    "digitalCoverage": 554,
+    "clickToOmni": 16
+  },
+  {
+    "region": "Ninh Bình",
+    "lat": 20.2506,
+    "lng": 105.9745,
+    "digitalCoverage": 613,
+    "clickToOmni": 14
+  },
+  {
+    "region": "Kon Tum",
+    "lat": 14.3545,
+    "lng": 108.0076,
+    "digitalCoverage": 446,
+    "clickToOmni": 12
+  },
+  {
+    "region": "Ninh Thuận",
+    "lat": 11.6739,
+    "lng": 108.8629,
+    "digitalCoverage": 456,
+    "clickToOmni": 11
+  },
+  {
+    "region": "Quảng Bình",
+    "lat": 17.4689,
+    "lng": 106.6223,
+    "digitalCoverage": 549,
+    "clickToOmni": 10
+  },
+  {
+    "region": "Đồng Tháp",
+    "lat": 10.4938,
+    "lng": 105.6882,
+    "digitalCoverage": 655,
+    "clickToOmni": 7
+  },
+  {
+    "region": "Quảng Trị",
+    "lat": 16.7943,
+    "lng": 107.1878,
+    "digitalCoverage": 280,
+    "clickToOmni": 6
+  },
+  {
+    "region": "Quảng Nam",
+    "lat": 15.5394,
+    "lng": 108.0191,
+    "digitalCoverage": 1375,
+    "clickToOmni": 5
+  },
+  {
+    "region": "Hậu Giang",
+    "lat": 9.7845,
+    "lng": 105.4701,
+    "digitalCoverage": 233,
+    "clickToOmni": 4
+  },
+  {
+    "region": "Hải Dương",
+    "lat": 20.9373,
+    "lng": 106.3145,
+    "digitalCoverage": 55,
+    "clickToOmni": 4
+  },
+  {
+    "region": "Hà Nam",
+    "lat": 20.5835,
+    "lng": 105.923,
+    "digitalCoverage": 368,
+    "clickToOmni": 2
+  },
+  {
+    "region": "Vĩnh Long",
+    "lat": 10.2396,
+    "lng": 105.9572,
+    "digitalCoverage": 140,
+    "clickToOmni": 2
+  },
+  {
+    "region": "Quảng Ngãi",
+    "lat": 15.1214,
+    "lng": 108.8044,
+    "digitalCoverage": 19,
+    "clickToOmni": 2
+  },
+  {
+    "region": "Tây Ninh",
+    "lat": 11.335,
+    "lng": 106.1099,
+    "digitalCoverage": 17,
+    "clickToOmni": 2
+  },
+  {
+    "region": "Bình Định",
+    "lat": 13.782,
+    "lng": 109.2196,
+    "digitalCoverage": 13,
+    "clickToOmni": 2
+  },
+  {
+    "region": "Quảng Ninh",
+    "lat": 21.0064,
+    "lng": 107.2925,
+    "digitalCoverage": 56,
+    "clickToOmni": 1
+  },
+  {
+    "region": "Nam Định",
+    "lat": 20.4388,
+    "lng": 106.1621,
+    "digitalCoverage": 22,
+    "clickToOmni": 1
+  },
+  {
+    "region": "Kiên Giang",
+    "lat": 10.0125,
+    "lng": 105.0809,
+    "digitalCoverage": 20,
+    "clickToOmni": 1
+  },
+  {
+    "region": "Hưng Yên",
+    "lat": 20.6464,
+    "lng": 106.0511,
+    "digitalCoverage": 7,
+    "clickToOmni": 1
+  },
+  {
+    "region": "An Giang",
+    "lat": 10.5216,
+    "lng": 105.1259,
+    "digitalCoverage": 20,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Tiền Giang",
+    "lat": 10.4493,
+    "lng": 106.3421,
+    "digitalCoverage": 15,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Cà Mau",
+    "lat": 9.1527,
+    "lng": 105.1961,
+    "digitalCoverage": 14,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Bến Tre",
+    "lat": 10.2433,
+    "lng": 106.3756,
+    "digitalCoverage": 10,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Bình Phước",
+    "lat": 11.7512,
+    "lng": 106.7235,
+    "digitalCoverage": 9,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Vĩnh Phúc",
+    "lat": 21.3089,
+    "lng": 105.6049,
+    "digitalCoverage": 9,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Bạc Liêu",
+    "lat": 9.294,
+    "lng": 105.7244,
+    "digitalCoverage": 8,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Gia Lai",
+    "lat": 13.9833,
+    "lng": 108,
+    "digitalCoverage": 8,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Phú Thọ",
+    "lat": 21.2684,
+    "lng": 105.2046,
+    "digitalCoverage": 6,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Thái Nguyên",
+    "lat": 21.5942,
+    "lng": 105.8482,
+    "digitalCoverage": 6,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Sóc Trăng",
+    "lat": 9.6036,
+    "lng": 105.98,
+    "digitalCoverage": 5,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Trà Vinh",
+    "lat": 9.8127,
+    "lng": 106.2993,
+    "digitalCoverage": 5,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Bắc Giang",
+    "lat": 21.2731,
+    "lng": 106.1946,
+    "digitalCoverage": 3,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Hà Giang",
+    "lat": 22.7662,
+    "lng": 104.9389,
+    "digitalCoverage": 3,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Phú Yên",
+    "lat": 13.0882,
+    "lng": 109.0929,
+    "digitalCoverage": 3,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Hòa Bình",
+    "lat": 20.8172,
+    "lng": 105.3376,
+    "digitalCoverage": 2,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Lào Cai",
+    "lat": 22.4809,
+    "lng": 103.9755,
+    "digitalCoverage": 2,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Yên Bái",
+    "lat": 21.7229,
+    "lng": 104.9113,
+    "digitalCoverage": 2,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Đắk Nông",
+    "lat": 12.2646,
+    "lng": 107.6098,
+    "digitalCoverage": 2,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Cao Bằng",
+    "lat": 22.6666,
+    "lng": 106.2639,
+    "digitalCoverage": 1,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Hà Tĩnh",
+    "lat": 18.3559,
+    "lng": 105.8877,
+    "digitalCoverage": 1,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Lạng Sơn",
+    "lat": 21.8526,
+    "lng": 106.7615,
+    "digitalCoverage": 1,
+    "clickToOmni": 0
+  },
+  {
+    "region": "Điện Biên",
+    "lat": 21.386,
+    "lng": 103.0169,
+    "digitalCoverage": 1,
+    "clickToOmni": 0
+  }
+];
+var LOCATION_STORE_KEY = 'pnj_location_data';
+var LOCATION_DATA = (function(){
+  try{
+    var raw = localStorage.getItem(LOCATION_STORE_KEY);
+    if(raw){
+      var parsed = JSON.parse(raw);
+      if(parsed && Array.isArray(parsed.rows) && parsed.rows.length) return parsed;
+    }
+  }catch(e){}
+  return {rows: JSON.parse(JSON.stringify(LOCATION_DEFAULT_ROWS)), savedAt: ''};
+})();
+
+var locationMetric = 'digitalCoverage';
+var locSortCol = 'digitalCoverage';
+var locSortDir = -1;
+var locPage = 1;
+var LOC_PAGE = 15;
+var locFiltered = LOCATION_DATA.rows.slice();
+var locSelected = null;
+var locMap = null;
+var locMarkers = [];
+
+var LOC_MC = {
+  digitalCoverage:{label:'Digital Coverage', short:'Digital Coverage', color:'#10B981'},
+  clickToOmni:{label:'Click to Omni', short:'Click to Omni', color:'#C8973A'}
+};
+
+function locRows(){ return LOCATION_DATA.rows || []; }
+function locFmt(n){ return (n==null||n===undefined) ? '—' : Number(n).toLocaleString('vi-VN'); }
+function locFmtShort(n){
+  n = Number(n)||0;
+  if(n>=1e9) return (n/1e9).toFixed(1).replace('.0','')+'B';
+  if(n>=1e6) return (n/1e6).toFixed(1).replace('.0','')+'M';
+  if(n>=1e3) return (n/1e3).toFixed(1).replace('.0','')+'K';
+  return n.toLocaleString('vi-VN');
+}
+function locVal(d,m){ return Number(d[m||locationMetric]) || 0; }
+
+function initLocationMap(){
+  if(locMap || typeof L === 'undefined') return;
+  var isMob = window.innerWidth <= 640;
+  locMap = L.map('locMap', {
+    center: isMob ? [16.5,107.5] : [16.2,107.8],
+    zoom: isMob ? 5 : 6,
+    zoomControl: !isMob,
+    attributionControl: false,
+    tap: true
+  });
+  if(isMob) L.control.zoom({position:'bottomright'}).addTo(locMap);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'© OpenStreetMap', opacity:0.45}).addTo(locMap);
+  L.control.attribution({position:'bottomright'}).addTo(locMap);
+  setTimeout(function(){ locMap.invalidateSize(); renderLocationMap(); }, 60);
+}
+
+function renderLocationKPIs(){
+  var coverage = locRows().reduce(function(s,d){ return s + locVal(d,'digitalCoverage'); }, 0);
+  var clicks = locRows().reduce(function(s,d){ return s + locVal(d,'clickToOmni'); }, 0);
+  document.getElementById('locKpiCoverage').textContent = locFmtShort(coverage);
+  document.getElementById('locKpiCoverageS').textContent = locFmt(coverage) + ' lượt tiếp cận';
+  document.getElementById('locKpiClick').textContent = locFmtShort(clicks);
+  document.getElementById('locKpiClickS').textContent = locFmt(clicks) + ' clicks';
+}
+
+function locBubbleRadius(val,maxVal){
+  if(!maxVal || !val) return 0;
+  var isMob = window.innerWidth <= 640;
+  var minR = isMob ? 4 : 5;
+  var maxR = isMob ? 24 : 40;
+  return minR + Math.sqrt(val/maxVal) * (maxR-minR);
+}
+
+function renderLocationMap(){
+  if(!locMap) return;
+  locMarkers.forEach(function(m){ locMap.removeLayer(m); });
+  locMarkers = [];
+  var mc = LOC_MC[locationMetric];
+  var rows = locRows();
+  var maxVal = Math.max.apply(null, rows.map(function(d){ return locVal(d); }).concat([0]));
+  rows.forEach(function(d){
+    var lat = Number(d.lat), lng = Number(d.lng), val = locVal(d);
+    if(!isFinite(lat) || !isFinite(lng) || !val) return;
+    var r = locBubbleRadius(val,maxVal);
+    var isSel = locSelected === d.region;
+    var hasSel = !!locSelected;
+    var circle = L.circleMarker([lat,lng], {
+      radius:r,
+      fillColor:mc.color,
+      color:mc.color,
+      weight:isSel ? 2.5 : 1.5,
+      opacity:1,
+      fillOpacity:hasSel ? (isSel ? .88 : .18) : .65
+    });
+    circle.bindTooltip(
+      '<div class="loc-tt-region">'+d.region+'</div>'+
+      '<div class="loc-tt-row"><span class="loc-tt-label">Digital Coverage</span><span class="loc-tt-val">'+locFmt(d.digitalCoverage)+'</span></div>'+
+      '<div class="loc-tt-row"><span class="loc-tt-label">Click to Omni</span><span class="loc-tt-val">'+locFmt(d.clickToOmni)+'</span></div>',
+      {className:'leaflet-tooltip-custom', permanent:false, direction:'top', offset:[0,-r]}
+    );
+    circle.on('click', function(){
+      locSelected = locSelected === d.region ? null : d.region;
+      renderLocationMap(); renderLocationTop10(); renderLocationTable();
+    });
+    circle.addTo(locMap);
+    locMarkers.push(circle);
+  });
+  document.getElementById('locLegendMetric').textContent = mc.label;
+  document.querySelectorAll('.loc-bubble-dot').forEach(function(b){
+    var rgb = mc.color.match(/\w\w/g).map(function(x){ return parseInt(x,16); });
+    b.style.background = 'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+',.38)';
+    b.style.borderColor = mc.color;
+  });
+}
+
+function renderLocationTop10(){
+  var mc = LOC_MC[locationMetric];
+  document.getElementById('locTopLabel').textContent = 'Theo ' + mc.short;
+  var top = locRows().slice().sort(function(a,b){ return locVal(b)-locVal(a); }).slice(0,10);
+  var maxVal = top.length ? locVal(top[0]) : 0;
+  var html = top.map(function(d,i){
+    var val = locVal(d);
+    var pctVal = maxVal ? val/maxVal*100 : 0;
+    var rc = i===0 ? 'r1' : i===1 ? 'r2' : i===2 ? 'r3' : '';
+    return '<div class="loc-top-item '+(locSelected===d.region?'highlight':'')+'" onclick="selectLocationRegion(\''+escJ(d.region)+'\')">'+
+      '<div class="loc-rank '+rc+'">'+(i+1)+'</div>'+
+      '<div class="loc-top-name">'+d.region+'</div>'+
+      '<div class="loc-top-bar-wrap"><div class="loc-top-bar-bg"><div class="loc-top-bar-fill" style="width:'+pctVal+'%;background:'+mc.color+'"></div></div></div>'+
+      '<div class="loc-top-val" style="color:'+mc.color+'">'+locFmt(val)+'</div>'+
+      '</div>';
+  }).join('');
+  document.getElementById('locTopList').innerHTML = html || '<div class="gallery-empty">Chưa có dữ liệu location</div>';
+}
+
+function selectLocationRegion(region){
+  locSelected = locSelected === region ? null : region;
+  var row = locRows().find(function(d){ return d.region === locSelected; });
+  if(row && locMap && isFinite(Number(row.lat)) && isFinite(Number(row.lng))){
+    locMap.setView([Number(row.lat), Number(row.lng)], 8, {animate:true});
+  }
+  renderLocationMap(); renderLocationTop10(); renderLocationTable();
+}
+
+function filterLocationTable(){
+  var input = document.getElementById('locSearchInput');
+  var q = input ? input.value.toLowerCase() : '';
+  locFiltered = locRows().filter(function(d){ return String(d.region||'').toLowerCase().indexOf(q) >= 0; });
+  locPage = 1;
+  renderLocationTable();
+}
+
+function sortLocationTable(col){
+  if(locSortCol === col) locSortDir = -locSortDir;
+  else { locSortCol = col; locSortDir = -1; }
+  ['region','digitalCoverage','clickToOmni'].forEach(function(c){
+    var th = document.getElementById('locTh-'+c);
+    if(th){ th.classList.remove('sorted'); var si=th.querySelector('.si'); if(si) si.textContent=''; }
+  });
+  var active = document.getElementById('locTh-'+col);
+  if(active){ active.classList.add('sorted'); var asi=active.querySelector('.si'); if(asi) asi.textContent = locSortDir===-1 ? '↓' : '↑'; }
+  renderLocationTable();
+}
+
+function renderLocationTable(){
+  if(!locFiltered) locFiltered = locRows().slice();
+  var sorted = locFiltered.slice().sort(function(a,b){
+    var av = a[locSortCol], bv = b[locSortCol];
+    if(locSortCol === 'region') return locSortDir * String(av||'').localeCompare(String(bv||''),'vi');
+    return locSortDir * ((Number(av)||0) - (Number(bv)||0));
+  });
+  var total = sorted.length;
+  var pages = Math.max(1, Math.ceil(total/LOC_PAGE));
+  locPage = Math.min(locPage, pages);
+  var start = (locPage-1) * LOC_PAGE;
+  var rows = sorted.slice(start,start+LOC_PAGE);
+  var body = document.getElementById('locTableBody');
+  if(!body) return;
+  body.innerHTML = rows.map(function(d,i){
+    return '<tr onclick="selectLocationRegion(\''+escJ(d.region)+'\')" style="cursor:pointer;'+(locSelected===d.region?'background:#EFF6FF;':'')+'">'+
+      '<td><span style="color:#9CA3AF;font-size:10px;margin-right:6px;">'+(start+i+1)+'</span><span class="loc-region">'+d.region+'</span></td>'+
+      '<td class="loc-num">'+locFmt(d.digitalCoverage)+'</td>'+
+      '<td class="loc-num">'+locFmt(d.clickToOmni)+'</td>'+
+      '</tr>';
+  }).join('');
+  document.getElementById('locPaginationInfo').textContent = total ? (start+1)+'–'+Math.min(start+LOC_PAGE,total)+' / '+total+' tỉnh' : '0 tỉnh';
+  renderLocationPagination(pages);
+}
+
+function renderLocationPagination(pages){
+  var el = document.getElementById('locPageBtns');
+  if(!el) return;
+  el.innerHTML = '';
+  function add(label,p,disabled,active){
+    var b = document.createElement('button');
+    b.className = 'loc-page-btn' + (active ? ' active' : '');
+    b.textContent = label;
+    b.disabled = disabled;
+    b.onclick = function(){ locPage = p; renderLocationTable(); };
+    el.appendChild(b);
+  }
+  add('←', locPage-1, locPage===1, false);
+  locPageRange(locPage,pages).forEach(function(p){
+    if(p === '…'){
+      var s = document.createElement('span');
+      s.textContent = '…';
+      s.style.cssText = 'padding:0 3px;color:#9CA3AF';
+      el.appendChild(s);
+    } else add(p,p,false,p===locPage);
+  });
+  add('→', locPage+1, locPage===pages, false);
+}
+function locPageRange(c,t){
+  if(t<=7) return Array.from({length:t}, function(_,i){ return i+1; });
+  var p=[1];
+  if(c>3) p.push('…');
+  for(var i=Math.max(2,c-1); i<=Math.min(t-1,c+1); i++) p.push(i);
+  if(c<t-2) p.push('…');
+  p.push(t);
+  return p;
+}
+
+function setLocationMetric(m){
+  locationMetric = m;
+  document.querySelectorAll('.loc-metric-btn').forEach(function(b){ b.classList.remove('active'); });
+  var active = document.getElementById('locMetric-'+m);
+  if(active) active.classList.add('active');
+  renderLocationMap(); renderLocationTop10();
+}
+
+function resetLocationFilter(){
+  locSelected = null;
+  var input = document.getElementById('locSearchInput');
+  if(input) input.value = '';
+  locFiltered = locRows().slice();
+  locPage = 1;
+  if(locMap) locMap.setView(window.innerWidth<=640 ? [16.5,107.5] : [16.2,107.8], window.innerWidth<=640 ? 5 : 6, {animate:true});
+  renderLocation();
+}
+
+function renderLocation(){
+  locFiltered = locFiltered && locFiltered.length ? locFiltered : locRows().slice();
+  renderLocationKPIs();
+  renderLocationMap();
+  renderLocationTop10();
+  renderLocationTable();
+  if(locMap) setTimeout(function(){ locMap.invalidateSize(); }, 50);
+}
+
+function locNorm(s){
+  return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
+}
+function locParseCsv(csv){
+  var rows = [];
+  csv.trim().split(/\r?\n/).forEach(function(line){
+    var cells=[], inQ=false, cur='';
+    for(var i=0;i<line.length;i++){
+      var c=line[i], next=line[i+1];
+      if(c === '"' && inQ && next === '"'){ cur += '"'; i++; }
+      else if(c === '"'){ inQ = !inQ; }
+      else if(c === ',' && !inQ){ cells.push(cur.trim()); cur=''; }
+      else cur += c;
+    }
+    cells.push(cur.trim());
+    rows.push(cells);
+  });
+  return rows;
+}
+function locFindCol(headers, aliases){
+  var normalized = headers.map(locNorm);
+  var normalizedAliases = aliases.map(locNorm);
+  for(var i=0;i<normalized.length;i++){
+    if(normalizedAliases.indexOf(normalized[i]) >= 0) return i;
+  }
+  for(var j=0;j<normalized.length;j++){
+    for(var k=0;k<normalizedAliases.length;k++){
+      if(normalized[j].indexOf(normalizedAliases[k]) === 0) return j;
+    }
+  }
+  return -1;
+}
+function locParseNum(s){
+  if(s==null) return 0;
+  var clean = String(s).replace(/[^0-9.\-]/g,'');
+  return parseFloat(clean) || 0;
+}
+
+function parseLocationSheet(csv){
+  var rows = locParseCsv(csv);
+  if(!rows.length) throw new Error('CSV trống.');
+  var headerIdx = 0;
+  for(var ri=0; ri<Math.min(10,rows.length); ri++){
+    var joined = rows[ri].map(locNorm).join('|');
+    if((joined.indexOf('province')>=0 || joined.indexOf('region')>=0 || joined.indexOf('location')>=0 || joined.indexOf('tinhthanh')>=0) &&
+       (joined.indexOf('coverage')>=0 || joined.indexOf('reach')>=0 || joined.indexOf('click')>=0)){
+      headerIdx = ri; break;
+    }
+  }
+  var h = rows[headerIdx];
+  var ix = {
+    region: locFindCol(h, ['Province','Region','Tỉnh/Thành phố','Tinh thanh pho','Location']),
+    lat: locFindCol(h, ['Latitude','Lat']),
+    lng: locFindCol(h, ['Longitude','Lng','Lon']),
+    digitalCoverage: locFindCol(h, ['Digital_Coverage','Digital Coverage','Reach','Coverage']),
+    clickToOmni: locFindCol(h, ['Click_to_Omni','Click to Omni','Click','Clicks'])
+  };
+  if(ix.region < 0 || ix.digitalCoverage < 0 || ix.clickToOmni < 0){
+    throw new Error('Thiếu cột bắt buộc: Province, Digital_Coverage, Click_to_Omni.');
+  }
+  var parsed = [];
+  for(var i=headerIdx+1; i<rows.length; i++){
+    var r = rows[i];
+    var region = (r[ix.region]||'').replace(/"/g,'').trim();
+    if(!region) continue;
+    parsed.push({
+      region: region,
+      lat: ix.lat >= 0 ? locParseNum(r[ix.lat]) : null,
+      lng: ix.lng >= 0 ? locParseNum(r[ix.lng]) : null,
+      digitalCoverage: locParseNum(r[ix.digitalCoverage]),
+      clickToOmni: locParseNum(r[ix.clickToOmni])
+    });
+  }
+  if(!parsed.length) throw new Error('Không có dòng location hợp lệ.');
+  return parsed;
+}
+
+function saveLocationRows(rows){
+  LOCATION_DATA = {rows: rows, savedAt: new Date().toISOString()};
+  localStorage.setItem(LOCATION_STORE_KEY, JSON.stringify(LOCATION_DATA));
+  locFiltered = rows.slice();
+  locSelected = null;
+  locPage = 1;
+  renderLocation();
+}
+
+function loadLocationPasted(){
+  var csv = document.getElementById('locCsvPaste').value.trim();
+  if(!csv){ setStatus('Lỗi: Chưa có nội dung Location CSV.','#DC2626'); return; }
+  try{
+    var rows = parseLocationSheet(csv);
+    saveLocationRows(rows);
+    setStatus('✓ Sync location thành công · '+rows.length+' tỉnh/thành · Đã lưu, F5 vẫn giữ nguyên','#059669');
+  }catch(e){
+    setStatus('Lỗi parse Location: '+e.message,'#DC2626');
+  }
+}
+
+function loadLocationSheet(){
+  var url = document.getElementById('locSheetUrl').value.trim();
+  if(!url){ setStatus('Lỗi: Vui lòng dán link Location CSV.','#DC2626'); return; }
+  setStatus('⏳ Đang kết nối Location CSV...','#C8973A');
+  fetch(url)
+    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); })
+    .then(function(csv){ var rows = parseLocationSheet(csv); saveLocationRows(rows); setStatus('✓ Sync location thành công · '+rows.length+' tỉnh/thành · Đã lưu, F5 vẫn giữ nguyên','#059669'); })
+    .catch(function(){
+      var proxy = 'https://corsproxy.io/?'+encodeURIComponent(url);
+      setStatus('⏳ Thử Location qua CORS proxy...','#C8973A');
+      fetch(proxy)
+        .then(function(r){ return r.text(); })
+        .then(function(csv){ var rows = parseLocationSheet(csv); saveLocationRows(rows); setStatus('✓ Sync location thành công · '+rows.length+' tỉnh/thành · Đã lưu, F5 vẫn giữ nguyên','#059669'); })
+        .catch(function(e){
+          setStatus('❌ Không kết nối/parse được Location CSV. Dữ liệu đã lưu không bị thay đổi. '+(e&&e.message?e.message:''),'#D97706');
+          switchTab('loc-paste');
+        });
+    });
+}
+
+function resetLocationData(){
+  localStorage.removeItem(LOCATION_STORE_KEY);
+  LOCATION_DATA = {rows: JSON.parse(JSON.stringify(LOCATION_DEFAULT_ROWS)), savedAt: ''};
+  locFiltered = LOCATION_DATA.rows.slice();
+  locSelected = null;
+  locPage = 1;
+  renderLocation();
+  setStatus('Đã reset Location Data về template mặc định. Master MediaPlan không bị ảnh hưởng.','#4B5563');
+}
+
+function downloadLocationTemplate(){
+  var header = ['Province','Latitude','Longitude','Digital_Coverage','Click_to_Omni'];
+  var rows = [
+    ['TP. Hồ Chí Minh',10.7769,106.7009,72216,1717],
+    ['Hà Nội',21.0285,105.8542,34495,777],
+    ['Đà Nẵng',16.0544,108.2022,6679,115],
+    ['Cần Thơ',10.0452,105.7469,4002,80]
+  ];
+  var csv = [header].concat(rows).map(function(r){ return r.map(function(c){ return String(c).indexOf(',')>=0 ? '"'+String(c).replace(/"/g,'""')+'"' : c; }).join(','); }).join('\n');
+  var blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'PNJ_Location_Performance_Template.csv';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+function downloadLocationCSV(){
+  var rows = (locFiltered && locFiltered.length ? locFiltered : locRows()).map(function(d){
+    return [d.region,d.lat==null?'':d.lat,d.lng==null?'':d.lng,d.digitalCoverage,d.clickToOmni];
+  });
+  var csv = [['Province','Latitude','Longitude','Digital_Coverage','Click_to_Omni']].concat(rows)
+    .map(function(r){ return r.map(function(c){ return String(c).indexOf(',')>=0 ? '"'+String(c).replace(/"/g,'""')+'"' : c; }).join(','); }).join('\n');
+  var blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'PNJ_Location_Performance.csv';
+  a.click(); URL.revokeObjectURL(url);
+}
+
 function render(){
   renderKPIs();
   renderChart();
