@@ -405,7 +405,7 @@ tr.total-row td{padding:12px;background:#F3F4F6;font-weight:700;font-size:12px;c
 <div class="header">
   <div>
     <div class="h-sup">Weekly Media Intelligence Hub</div>
-    <div class="h-title" id="hTitle">Master Media Allocation Plan — T5/2025</div>
+    <div class="h-title" id="hTitle">Master Media Allocation — T5/2025</div>
     <div class="h-daterange" id="hDateRange" style="margin-top:6px;display:none;">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       <span id="hDateText">—</span>
@@ -822,7 +822,7 @@ function campToGFilter(camp){
 function resetData(){
   _clearSaved();
   DATA = JSON.parse(JSON.stringify(DEFAULT));
-  document.getElementById('hTitle').textContent = 'Master Media Allocation Plan — T5/2025';
+  document.getElementById('hTitle').textContent = 'Master Media Allocation — T5/2025';
   document.getElementById('hBadge').textContent = 'APPROVED TEMPLATE';
   document.getElementById('hDateRange').style.display = 'none';
   document.getElementById('hWeekInfo').style.display = 'none';
@@ -991,7 +991,7 @@ function parseSheet(csv){
   DATA.ads = adsList;
 
   // Update header
-  document.getElementById('hTitle').textContent = 'Master Media Allocation Plan — ' + DATA.month;
+  document.getElementById('hTitle').textContent = 'Master Media Allocation — ' + DATA.month;
   document.getElementById('hBadge').textContent = 'LIVE DATA: ' + DATA.month;
   document.getElementById('gSyncBadge').style.display = '';
 
@@ -2321,7 +2321,7 @@ function render(){
 function _restoreHeaderFromSaved(){
   if(!DATA._savedAt) return;  // not from storage — skip
   var ts = new Date(DATA._savedAt).toLocaleString('vi-VN');
-  document.getElementById('hTitle').textContent = 'Master Media Allocation Plan — ' + DATA.month;
+  document.getElementById('hTitle').textContent = 'Master Media Allocation — ' + DATA.month;
   document.getElementById('hBadge').textContent = 'LIVE DATA: ' + DATA.month;
   document.getElementById('gSyncBadge').style.display = '';
   if(DATA.dateStart && DATA.dateEnd){
