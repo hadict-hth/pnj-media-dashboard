@@ -1070,12 +1070,18 @@ function getActiveData(){
 /* ═══════════════════════════════════════════════
    RENDER KPIs
 ═══════════════════════════════════════════════ */
+var REACH_DEDUP = 0.75;
+function applyDedup(reach){
+  return currentView==='all' ? Math.round(reach * REACH_DEDUP) : reach;
+}
+
 function renderKPIs(){
   var d=getActiveData(), t=d.total;
+  var dispReach = applyDedup(t.reach);
   document.getElementById('kpiBudget').textContent  = t.budget>=1e9?(t.budget/1e9).toFixed(2)+' tỷ':(t.budget/1e6).toFixed(1)+'M';
   document.getElementById('kpiBudgetS').textContent = t.budget.toLocaleString('vi-VN')+' VND';
-  document.getElementById('kpiReach').textContent   = t.reach>=1e6?(t.reach/1e6).toFixed(2)+'M':(t.reach/1e3).toFixed(0)+'K';
-  document.getElementById('kpiReachS').textContent  = t.reach.toLocaleString('vi-VN')+' lượt tiếp cận';
+  document.getElementById('kpiReach').textContent   = dispReach>=1e6?(dispReach/1e6).toFixed(2)+'M':(dispReach/1e3).toFixed(0)+'K';
+  document.getElementById('kpiReachS').textContent  = dispReach.toLocaleString('vi-VN')+' lượt tiếp cận';
   document.getElementById('kpiClick').textContent   = t.click>=1e6?(t.click/1e6).toFixed(2)+'M':(t.click/1e3).toFixed(0)+'K';
   document.getElementById('kpiClickS').textContent  = t.click.toLocaleString('vi-VN')+' clicks';
 }
@@ -1376,10 +1382,10 @@ function renderTable(){
   });
   html+='<tr class="total-row"><td>TỔNG CỘNG</td>'
        +'<td style="text-align:right;">'+fmtB(t.budget)+'</td>'
-       +'<td style="text-align:right;">'+fmtB(t.reach)+'</td>'
+       +'<td style="text-align:right;">'+fmtB(applyDedup(t.reach))+'</td>'
        +'<td style="text-align:right;">'+fmtB(t.click)+'</td>'
        +'<td class="eff-cell">'+fmtB(avgCPC)+'</td>'
-       +'<td class="eff-cell">'+fmtB(calcEff(t.budget,t.reach))+'</td></tr>';
+       +'<td class="eff-cell">'+fmtB(calcEff(t.budget,applyDedup(t.reach)))+'</td></tr>';
   document.getElementById('tableBody').innerHTML=html;
 }
 
@@ -1899,8 +1905,9 @@ function renderLocationKPIs(){
   var coverage = locRows().reduce(function(s,d){ return s + locVal(d,'digitalCoverage'); }, 0);
   var clicks = locRows().reduce(function(s,d){ return s + locVal(d,'clickToOmni'); }, 0);
   var revenue = locRows().reduce(function(s,d){ return s + locVal(d,'revenue'); }, 0);
-  document.getElementById('locKpiCoverage').textContent = locFmtShort(coverage);
-  document.getElementById('locKpiCoverageS').textContent = locFmt(coverage) + ' lượt tiếp cận';
+  var locDispCov = Math.round(coverage * REACH_DEDUP);
+  document.getElementById('locKpiCoverage').textContent = locFmtShort(locDispCov);
+  document.getElementById('locKpiCoverageS').textContent = locFmt(locDispCov) + ' lượt tiếp cận';
   document.getElementById('locKpiClick').textContent = locFmtShort(clicks);
   document.getElementById('locKpiClickS').textContent = locFmt(clicks) + ' clicks';
   document.getElementById('locKpiRevenue').textContent = locFmtMoney(revenue);
