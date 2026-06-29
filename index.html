@@ -238,7 +238,8 @@ tr.total-row td{padding:12px;background:#F3F4F6;font-weight:700;font-size:12px;c
 .loc-kpi-row{display:grid;grid-template-columns:1fr;gap:12px;}
 @media(min-width:600px){.loc-kpi-row{grid-template-columns:repeat(3,1fr);}}
 .loc-main-grid{display:grid;grid-template-columns:1fr;gap:14px;}
-@media(min-width:900px){.loc-main-grid{grid-template-columns:1fr 320px;}}
+@media(min-width:900px){.loc-main-grid{grid-template-columns:1fr 210px 210px;}}
+@media(max-width:640px){#locMap{height:280px;}}
 .loc-panel{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,.03);overflow:hidden;}
 .loc-panel-header{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;background:#FAFAFA;}
 .loc-panel-title{font-size:11px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:1px;}
@@ -246,7 +247,7 @@ tr.total-row td{padding:12px;background:#F3F4F6;font-weight:700;font-size:12px;c
 .loc-metric-btn{padding:6px 11px;border:1px solid var(--border);border-radius:7px;background:#fff;color:#4B5563;font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;}
 .loc-metric-btn.active{background:var(--navy);border-color:var(--navy);color:#fff;}
 .loc-reset-btn{padding:6px 11px;border:1px solid var(--border);border-radius:7px;background:#F3F4F6;color:#374151;font-size:11px;font-weight:700;cursor:pointer;}
-#locMap{height:460px;width:100%;background:#EEF2F7;}
+#locMap{height:360px;width:100%;background:#EEF2F7;}
 .loc-map-legend{padding:8px 14px;background:#F8FAFC;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;font-size:10px;color:#6B7280;flex-wrap:wrap;}
 .loc-bubble-dot{background:rgba(16,185,129,.38);border:2px solid #10B981;border-radius:50%;display:inline-block;}
 .loc-top-list{padding:6px 0;max-height:504px;overflow-y:auto;}
@@ -275,6 +276,23 @@ tr.total-row td{padding:12px;background:#F3F4F6;font-weight:700;font-size:12px;c
 .loc-page-btn{padding:4px 9px;border:1px solid var(--border);border-radius:5px;background:#fff;font-size:11px;cursor:pointer;color:#374151;}
 .loc-page-btn.active{background:var(--navy);border-color:var(--navy);color:#fff;}
 .loc-page-btn:disabled{opacity:.45;cursor:not-allowed;}
+
+/* Branch table */
+.loc-branch-panel{display:flex;flex-direction:column;}
+.branch-list{padding:4px 0;flex:1;overflow-y:auto;max-height:480px;}
+.branch-item{display:flex;align-items:center;gap:7px;padding:7px 14px;cursor:default;transition:background .15s;border-left:3px solid transparent;}
+.branch-item:hover{background:#F8FAFC;}
+.branch-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.branch-name{font-size:11px;font-weight:700;color:#1A2E4A;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.branch-bar-wrap{width:50px;flex-shrink:0;}
+.branch-bar-bg{height:4px;background:#F1F5F9;border-radius:2px;overflow:hidden;}
+.branch-bar-fill{height:4px;border-radius:2px;transition:width .25s;}
+.branch-val{font-size:10px;font-weight:800;min-width:52px;text-align:right;font-family:"DM Mono",monospace;}
+.branch-pct-badge{font-size:9px;font-weight:700;color:#6B7280;min-width:34px;text-align:right;font-family:"DM Mono",monospace;}
+.branch-metric-tabs{display:flex;gap:2px;padding:8px 14px 6px;border-bottom:1px solid var(--border);}
+.branch-m-tab{flex:1;padding:3px 4px;border:none;border-radius:5px;font-size:9px;font-weight:700;cursor:pointer;background:#F1F5F9;color:#6B7280;text-align:center;font-family:"DM Sans",sans-serif;transition:all .15s;}
+.branch-m-tab.active{background:var(--navy);color:#fff;}
+.branch-total-row{padding:8px 14px;border-top:1px solid var(--border);background:#FAFAFA;display:flex;justify-content:space-between;align-items:center;font-size:10px;}
 .leaflet-tooltip-custom{background:#1A2E4A;color:#fff;border:none;border-radius:9px;padding:10px 14px;font-family:'DM Sans',system-ui,sans-serif;box-shadow:0 4px 20px rgba(0,0,0,.25);min-width:190px;}
 .leaflet-tooltip-custom::before{display:none;}
 .loc-tt-region{font-size:13px;font-weight:800;color:var(--gold);margin-bottom:8px;border-bottom:1px solid rgba(255,255,255,.14);padding-bottom:6px;}
@@ -566,6 +584,24 @@ tr.total-row td{padding:12px;background:#F3F4F6;font-weight:700;font-size:12px;c
         <span style="font-size:10px;color:#9CA3AF;margin-left:auto;" id="locTopLabel">Theo Digital Coverage</span>
       </div>
       <div class="loc-top-list" id="locTopList"></div>
+    </div>
+  </div>
+
+  <!-- Branch Summary Panel -->
+  <div class="loc-panel loc-branch-panel">
+    <div class="loc-panel-header">
+      <span class="loc-panel-title">Tổng hợp Chi Nhánh</span>
+      <span style="font-size:10px;color:#9CA3AF;margin-left:auto;" id="locBranchLabel">Theo Digital Coverage</span>
+    </div>
+    <div class="branch-metric-tabs">
+      <button class="branch-m-tab active" data-bm="digitalCoverage" onclick="setBranchMetric(this,'digitalCoverage')">Coverage</button>
+      <button class="branch-m-tab" data-bm="clickToOmni"     onclick="setBranchMetric(this,'clickToOmni')">Click</button>
+      <button class="branch-m-tab" data-bm="revenue"         onclick="setBranchMetric(this,'revenue')">Revenue</button>
+    </div>
+    <div class="branch-list" id="locBranchList"></div>
+    <div class="branch-total-row">
+      <span style="color:#6B7280;">Tổng</span>
+      <span id="locBranchTotal" style="font-weight:700;font-family:'DM Mono',monospace;color:#111827;font-size:10.5px;">—</span>
     </div>
   </div>
 
@@ -1089,16 +1125,16 @@ function applyDigitalCoverageFormula(rawReach){
   // Bands: [from, to, mult_current, mult_next]
   // mult_next = mult của band kế tiếp → nội suy giúp result phụ thuộc raw
   var BANDS = [
-    [10*M, 15*M,  1.0,  1.05 ],
-    [15*M, 20*M,  1.05,  1.15 ],
-    [20*M, 30*M,  1.15,  1.2 ],
-    [30*M, 35*M,  1.2,  1.28 ],
-    [35*M, 40*M,  1.28,  1.3 ],
-    [40*M, 45*M,  1.3,  1.36],
-    [45*M, 50*M,  1.36, 1.4 ],
-    [50*M, 55*M,  1.4,  1.44],
-    [55*M, 60*M,  1.44, 1.5 ],
-    [60*M, Infinity, 1.5, 1.56]   // last band — no further scaling
+    [10*M, 15*M,  1.0,  1.1 ],
+    [15*M, 20*M,  1.1,  1.3 ],
+    [20*M, 30*M,  1.3,  1.4 ],
+    [30*M, 35*M,  1.4,  1.5 ],
+    [35*M, 40*M,  1.5,  1.6 ],
+    [40*M, 45*M,  1.6,  1.66],
+    [45*M, 50*M,  1.66, 1.7 ],
+    [50*M, 55*M,  1.7,  1.76],
+    [55*M, 60*M,  1.76, 1.8 ],
+    [60*M, Infinity, 1.8, 1.8]   // last band — no further scaling
   ];
 
   var band = BANDS[BANDS.length-1];
@@ -2023,6 +2059,107 @@ function locationDetailHtml(d){
     '</div>';
 }
 
+
+/* ── Branch constants ── */
+var VN_BRANCH_MAP = {
+  'TP. Hồ Chí Minh':'HCM','Ho Chi Minh City':'HCM',
+  'Hà Nội':'MBC','Hanoi':'MBC','Hải Phòng':'MBC','Haiphong':'MBC','Bắc Ninh':'MBC',
+  'Nghệ An':'MBC','Thanh Hóa':'MBC','Quảng Ninh':'MBC','Hải Dương':'MBC',
+  'Thái Nguyên':'MBC','Bắc Giang':'MBC','Hà Nam':'MBC','Hưng Yên':'MBC',
+  'Vĩnh Phúc':'MBC','Nam Định':'MBC','Ninh Bình':'MBC','Thái Bình':'MBC',
+  'Phú Thọ':'MBC','Cao Bằng':'MBC','Hà Giang':'MBC','Lào Cai':'MBC',
+  'Yên Bái':'MBC','Điện Biên':'MBC','Sơn La':'MBC','Lạng Sơn':'MBC',
+  'Hòa Bình':'MBC','Bắc Kạn':'MBC','Tuyên Quang':'MBC','Lai Châu':'MBC',
+  'Đà Nẵng':'MTG','Da Nang':'MTG','Thừa Thiên Huế':'MTG','Thừa Thiên–Huế':'MTG',
+  'Quảng Nam':'MTG','Bình Định':'MTG','Quảng Ngãi':'MTG',
+  'Quảng Bình':'MTG','Quảng Trị':'MTG','Hà Tĩnh':'MTG',
+  'Bình Dương':'DNB','Binh Duong Province':'DNB','Đồng Nai':'DNB','Dong Nai Province':'DNB',
+  'Bà Rịa - Vũng Tàu':'DNB','Tây Ninh':'DNB','Bình Phước':'DNB',
+  'Khánh Hòa':'TNN','Khanh Hoa Province':'TNN','Đắk Lắk':'TNN','Dak Lak Province':'TNN',
+  'Lâm Đồng':'TNN','Bình Thuận':'TNN','Gia Lai':'TNN','Ninh Thuận':'TNN',
+  'Đắk Nông':'TNN','Kon Tum':'TNN','Phú Yên':'TNN',
+  'Cần Thơ':'MTY','Can Tho':'MTY','Long An':'MTY','Kiên Giang':'MTY',
+  'Tiền Giang':'MTY','An Giang':'MTY','Đồng Tháp':'MTY','Sóc Trăng':'MTY',
+  'Bến Tre':'MTY','Trà Vinh':'MTY','Hậu Giang':'MTY','Vĩnh Long':'MTY',
+  'Cà Mau':'MTY','Bạc Liêu':'MTY'
+};
+
+var BRANCH_META = {
+  'HCM': {name:'HCM',     full:'TP. Hồ Chí Minh', color:'#C8973A'},
+  'MBC': {name:'MBC',     full:'Miền Bắc',         color:'#1A2E4A'},
+  'MTG': {name:'MTG',     full:'Miền Trung',        color:'#3B6A9C'},
+  'DNB': {name:'DNB',     full:'Đông Nam Bộ',       color:'#7C3AED'},
+  'TNN': {name:'TNN',     full:'Tây Nguyên',        color:'#059669'},
+  'MTY': {name:'MTY',     full:'Miền Tây',          color:'#D97706'}
+};
+var BRANCH_ORDER = ['HCM','MBC','MTG','DNB','TNN','MTY'];
+
+var branchMetric = 'digitalCoverage';
+
+function setBranchMetric(btn, m){
+  branchMetric = m;
+  document.querySelectorAll('.branch-m-tab').forEach(function(b){ b.classList.remove('active'); });
+  if(btn) btn.classList.add('active');
+  renderLocationBranchTable();
+}
+
+function aggregateByBranch(rows){
+  var agg = {};
+  BRANCH_ORDER.forEach(function(k){ agg[k] = {digitalCoverage:0, clickToOmni:0, revenue:0, count:0}; });
+  rows.forEach(function(d){
+    var br = d.chiNhanh || VN_BRANCH_MAP[d.region] || '';
+    if(!br || !agg[br]) return;
+    agg[br].digitalCoverage += Number(d.digitalCoverage)||0;
+    agg[br].clickToOmni     += Number(d.clickToOmni)||0;
+    agg[br].revenue         += Number(d.revenue)||0;
+    agg[br].count++;
+  });
+  return agg;
+}
+
+function renderLocationBranchTable(){
+  var rows = locRows();
+  var agg  = aggregateByBranch(rows);
+
+  // totals
+  var totalDC  = Object.values(agg).reduce(function(s,v){return s+v.digitalCoverage;},0);
+  var totalCL  = Object.values(agg).reduce(function(s,v){return s+v.clickToOmni;},0);
+  var totalRV  = Object.values(agg).reduce(function(s,v){return s+v.revenue;},0);
+  var metricTotals = {digitalCoverage:totalDC, clickToOmni:totalCL, revenue:totalRV};
+
+  var MC_LABELS = {digitalCoverage:'Digital Coverage', clickToOmni:'Click to Omni', revenue:'Doanh Thu'};
+  var el = document.getElementById('locBranchLabel');
+  if(el) el.textContent = 'Theo ' + MC_LABELS[branchMetric];
+
+  var maxVal = Math.max.apply(null, BRANCH_ORDER.map(function(k){ return agg[k][branchMetric]||0; }).concat([0]));
+  var grandTotal = metricTotals[branchMetric] || 1;
+
+  var list = document.getElementById('locBranchList');
+  if(!list) return;
+
+  list.innerHTML = BRANCH_ORDER.map(function(k){
+    var v    = agg[k];
+    var meta = BRANCH_META[k];
+    var val  = v[branchMetric] || 0;
+    var pctV = grandTotal > 0 ? (val/grandTotal*100).toFixed(1) : '0.0';
+    var barW = maxVal > 0 ? (val/maxVal*100).toFixed(1) : 0;
+    var fmtVal = branchMetric === 'revenue' ? locFmtMoney(val) : locFmt(val);
+    return '<div class="branch-item">'
+      + '<span class="branch-dot" style="background:' + meta.color + '"></span>'
+      + '<span class="branch-name" title="' + meta.full + '">' + meta.name + '</span>'
+      + '<div class="branch-bar-wrap"><div class="branch-bar-bg"><div class="branch-bar-fill" style="width:' + barW + '%;background:' + meta.color + '"></div></div></div>'
+      + '<span class="branch-val" style="color:' + meta.color + '">' + (val ? fmtVal : '—') + '</span>'
+      + '<span class="branch-pct-badge">' + (val ? pctV + '%' : '—') + '</span>'
+      + '</div>';
+  }).join('');
+
+  var totalEl = document.getElementById('locBranchTotal');
+  if(totalEl) {
+    var fmt = branchMetric==='revenue' ? locFmtMoney(grandTotal) : locFmt(grandTotal);
+    totalEl.textContent = grandTotal ? fmt : '—';
+  }
+}
+
 function renderLocationTop10(){
   var mc = LOC_MC[locationMetric];
   document.getElementById('locTopLabel').textContent = 'Theo ' + mc.short;
@@ -2135,7 +2272,7 @@ function setLocationMetric(m){
   document.querySelectorAll('.loc-metric-btn').forEach(function(b){ b.classList.remove('active'); });
   var active = document.getElementById('locMetric-'+m);
   if(active) active.classList.add('active');
-  renderLocationMap(); renderLocationTop10();
+  renderLocationMap(); renderLocationTop10(); renderLocationBranchTable();
 }
 
 function resetLocationFilter(){
@@ -2153,6 +2290,7 @@ function renderLocation(){
   renderLocationKPIs();
   renderLocationMap();
   renderLocationTop10();
+  renderLocationBranchTable();
   renderLocationTable();
   if(locMap) setTimeout(function(){ locMap.invalidateSize(); }, 50);
 }
@@ -2213,7 +2351,8 @@ function parseLocationSheet(csv){
     lng: locFindCol(h, ['Longitude','Lng','Lon']),
     digitalCoverage: locFindCol(h, ['Digital_Coverage','Digital Coverage','Reach','Coverage']),
     clickToOmni: locFindCol(h, ['Click_to_Omni','Click to Omni','Click','Clicks']),
-    revenue: locFindCol(h, ['Revenue','Doanh Thu','Doanh_Thu','Revenue_VND','Doanh thu VND'])
+    revenue: locFindCol(h, ['Revenue','Doanh Thu','Doanh_Thu','Revenue_VND','Doanh thu VND']),
+    chiNhanh: locFindCol(h, ['Chi_Nhanh','Chi Nhanh','ChiNhanh','Branch','branch'])
   };
   if(ix.region < 0 || ix.digitalCoverage < 0 || ix.clickToOmni < 0){
     throw new Error('Thiếu cột bắt buộc: Province, Digital_Coverage, Click_to_Omni.');
@@ -2229,7 +2368,8 @@ function parseLocationSheet(csv){
       lng: ix.lng >= 0 ? locParseNum(r[ix.lng]) : null,
       digitalCoverage: locParseNum(r[ix.digitalCoverage]),
       clickToOmni: locParseNum(r[ix.clickToOmni]),
-      revenue: ix.revenue >= 0 ? locParseNum(r[ix.revenue]) : 0
+      revenue: ix.revenue >= 0 ? locParseNum(r[ix.revenue]) : 0,
+      chiNhanh: ix.chiNhanh >= 0 ? (r[ix.chiNhanh]||'').replace(/"/g,'').trim() : (VN_BRANCH_MAP[region]||'')
     });
   }
   if(!parsed.length) throw new Error('Không có dòng location hợp lệ.');
