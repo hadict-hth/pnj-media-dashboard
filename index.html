@@ -284,11 +284,10 @@ tr.total-row td{padding:12px;background:#F3F4F6;font-weight:700;font-size:12px;c
 .branch-item:hover{background:#F8FAFC;}
 .branch-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
 .branch-name{font-size:11px;font-weight:700;color:#1A2E4A;flex:1;min-width:38px;white-space:nowrap;overflow:visible;text-overflow:clip;}
-.branch-bar-wrap{width:58px;flex-shrink:0;}
+.branch-bar-wrap{width:86px;flex-shrink:0;}
 .branch-bar-bg{height:4px;background:#F1F5F9;border-radius:2px;overflow:hidden;}
 .branch-bar-fill{height:4px;border-radius:2px;transition:width .25s;}
-.branch-val{font-size:10px;font-weight:800;min-width:68px;text-align:right;font-family:"DM Mono",monospace;white-space:nowrap;}
-.branch-pct-badge{font-size:9px;font-weight:700;color:#6B7280;min-width:38px;text-align:right;font-family:"DM Mono",monospace;}
+.branch-pct-badge{font-size:10px;font-weight:800;min-width:42px;text-align:right;font-family:"DM Mono",monospace;}
 .leaflet-tooltip-custom{background:#1A2E4A;color:#fff;border:none;border-radius:9px;padding:10px 14px;font-family:'DM Sans',system-ui,sans-serif;box-shadow:0 4px 20px rgba(0,0,0,.25);min-width:190px;}
 .leaflet-tooltip-custom::before{display:none;}
 .loc-tt-region{font-size:13px;font-weight:800;color:var(--gold);margin-bottom:8px;border-bottom:1px solid rgba(255,255,255,.14);padding-bottom:6px;}
@@ -2096,7 +2095,6 @@ function renderLocationBranchTable(){
   var el = document.getElementById('locBranchLabel');
   if(el) el.textContent = 'Theo ' + MC_LABELS[branchMetric];
 
-  var maxVal = Math.max.apply(null, BRANCH_ORDER.map(function(k){ return agg[k][branchMetric]||0; }).concat([0]));
   var grandTotal = metricTotals[branchMetric] || 1;
 
   var list = document.getElementById('locBranchList');
@@ -2107,14 +2105,12 @@ function renderLocationBranchTable(){
     var meta = BRANCH_META[k];
     var val  = v[branchMetric] || 0;
     var pctV = grandTotal > 0 ? (val/grandTotal*100).toFixed(1) : '0.0';
-    var barW = maxVal > 0 ? (val/maxVal*100).toFixed(1) : 0;
-    var fmtVal = branchMetric === 'revenue' ? locFmtMoney(val) : locFmt(val);
+    var barW = val ? pctV : 0;
     return '<div class="branch-item">'
       + '<span class="branch-dot" style="background:' + meta.color + '"></span>'
       + '<span class="branch-name" title="' + meta.full + '">' + meta.name + '</span>'
       + '<div class="branch-bar-wrap"><div class="branch-bar-bg"><div class="branch-bar-fill" style="width:' + barW + '%;background:' + meta.color + '"></div></div></div>'
-      + '<span class="branch-val" style="color:' + meta.color + '">' + (val ? fmtVal : '—') + '</span>'
-      + '<span class="branch-pct-badge">' + (val ? pctV + '%' : '—') + '</span>'
+      + '<span class="branch-pct-badge" style="color:' + meta.color + '">' + (val ? pctV + '%' : '—') + '</span>'
       + '</div>';
   }).join('');
 
